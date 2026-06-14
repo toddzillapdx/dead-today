@@ -5,7 +5,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { metadataUrl, normalizeTracks } from "@/lib/archive";
 
-export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(

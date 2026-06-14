@@ -9,7 +9,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { buildOnThisDayUrl, buildBrowseUrl, normalizeShows } from "@/lib/archive";
 import { ERA_RANGES } from "@/lib/era";
 
-export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: NextRequest) {
