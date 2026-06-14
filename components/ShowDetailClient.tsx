@@ -3,6 +3,7 @@
 import { Track } from '@/lib/types';
 import { TrackList } from '@/components/TrackList';
 import { StarRating } from '@/components/StarRating';
+import { useAudio } from '@/components/AudioProvider';
 import Link from 'next/link';
 
 interface ShowDetailClientProps {
@@ -24,6 +25,12 @@ export function ShowDetailClient({
   era,
   tracks,
 }: ShowDetailClientProps) {
+  const { loadTrack } = useAudio();
+
+  const handleTrackClick = (track: Track) => {
+    loadTrack(track.streamUrl, track.title, track.filename);
+  };
+
   return (
     <main className="min-h-screen bg-dt-black text-dt-bone px-6 py-10 max-w-3xl mx-auto pb-32">
       {/* Back Button */}
@@ -77,7 +84,7 @@ export function ShowDetailClient({
         <h2 className="text-2xl font-display font-bold uppercase mb-6">
           All Tracks
         </h2>
-        <TrackList tracks={tracks} />
+        <TrackList tracks={tracks} onTrackClick={handleTrackClick} />
       </section>
     </main>
   );
