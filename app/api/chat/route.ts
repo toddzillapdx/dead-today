@@ -10,7 +10,6 @@ import { NextRequest } from "next/server";
 import { buildSystemPrompt } from "@/lib/prompt";
 import type { ChatMessage, Show } from "@/lib/types";
 
-export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 const MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-20250514";
