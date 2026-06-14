@@ -1,9 +1,5 @@
 import { notFound } from 'next/navigation';
-import { SetDivider } from '@/components/SetDivider';
-import { TrackList } from '@/components/TrackList';
-import { StarRating } from '@/components/StarRating';
-import { LightningBolt } from '@/components/LightningBolt';
-import Link from 'next/link';
+import { ShowDetailClient } from '@/components/ShowDetailClient';
 
 async function fetchShowMetadata(identifier: string) {
   try {
@@ -32,87 +28,28 @@ export default async function ShowDetailPage({ params }: ShowParams) {
     notFound();
   }
 
-  const { show, tracks, setlist } = showData;
-
-  // Group tracks by set
-  const groupedTracks = groupTracksBySet(tracks, setlist);
+  const { metadata, tracks } = showData;
+  
+  // Normalize metadata to Show-like object
+  const show = {
+    identifier: metadata.identifier || identifier,
+    date: metadata.date || 'Unknown Date',
+    venue: metadata.venue || 'Unknown Venue',
+    city: metadata.coverage || metadata.type || '',
+    avgRating: 3.5, // Placeholder (not in metadata)
+    era: 'Unknown Era',
+    title: metadata.title || 'Unknown Show',
+  };
 
   return (
-    <main className="min-h-screen bg-dt-black text-dt-bone px-6 py-10 max-w-3xl mx-auto pb-32">
-      {/* Back Button */}
-      <Link
-        href="/"
-        className="inline-flex items-center gap-2 text-dt-red hover:opacity-75 transition mb-8 text-sm uppercase font-display"
-      >
-        <span>&larr;</span> Back to Today
-      </Link>
-
-      {/* Show Header */}
-      <header className="mb-10">
-        <div className="flex items-start gap-6 mb-6">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-4xl font-display font-bold uppercase">
-                {show.date}
-              </h1>
-              <StarRating rating={show.avgRating} size="md" />
-            </div>
-            <p className="text-dt-text-subtle text-lg mb-2">
-              {show.venue}
-            </p>
-            {show.city && (
-              <p className="text-dt-text-subtle text-sm">{show.city}</p>
-            )}
-            {show.era && (
-              <p className="text-dt-red text-sm font-medium mt-2">
-                {show.era}
-              </p>
-            )}
-          </div>
-        </div>
-      </header>
-
-      {/* Setlist */}
-      <section className="mb-10">
-        <h2 className="text-2xl font-display font-bold uppercase mb-6">
-          Setlist
-        </h2>
-
-        {setlist && setlist.sets && setlist.sets.length > 0 ? (
-          <div>
-            {setlist.sets.map((set: any, idx: number) => (
-              <div key={idx}>
-                <SetDivider setNumber={set.name as any} />
-                <TrackList
-                  tracks={set.tracks || []}
-                  onTrackClick={(track) => {
-                    // Track click will be handled via audio context in the mini player
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-        ) : (
-          <div className="bg-dt-text-subtle bg-opacity-5 rounded-lg p-6">
-            <p className="text-dt-text-subtle text-sm">
-              Setlist unavailable. See full track list below.
-            </p>
-          </div>
-        )}
-      </section>
-
-      {/* Full Track List */}
-      <section>
-        <h2 className="text-2xl font-display font-bold uppercase mb-6">
-          All Tracks
-        </h2>
-        <TrackList tracks={tracks} />
-      </section>
-    </main>
+    <ShowDetailClient
+      identifier={show.identifier}
+      date={show.date}
+      venue={show.venue}
+      city={show.city}
+      avgRating={show.avgRating}
+      era={show.era}
+      tracks={tracks || []}
+    />
   );
-}
-
-function groupTracksBySet(tracks: any[], setlist: any) {
-  if (!setlist || !setlist.sets) return [{ name: 'All Tracks', tracks }];
-  return setlist.sets;
 }
