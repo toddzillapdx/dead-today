@@ -77,11 +77,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       const index = currentTrackIndexRef.current;
       const tracks = playlistRef.current;
       
-      console.log('[handleEnded] Current index:', index, 'Playlist length:', tracks.length);
-      
       if (index >= 0 && index < tracks.length - 1) {
         const nextTrack = tracks[index + 1];
-        console.log('[handleEnded] Loading next track:', nextTrack.title);
         
         // Update state AND ref immediately
         const nextIndex = index + 1;
@@ -94,7 +91,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
           audio.play().catch(() => {});
         }
       } else {
-        console.log('[handleEnded] End of playlist or invalid index');
         setIsPlaying(false);
       }
     };
@@ -137,22 +133,18 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   };
 
   const loadTrack = useCallback((url: string, title: string, trackId: string) => {
-    console.log('[loadTrack] Loading track:', title, 'trackId:', trackId);
-    
     setCurrentTrackId(trackId);
     setCurrentTrackTitle(title);
     setCurrentTime(0);
     
     // Find the track index in the playlist
     const trackIndex = playlist.findIndex(t => t.trackId === trackId);
-    console.log('[loadTrack] Found track at index:', trackIndex, 'Playlist size:', playlist.length);
     
     if (audioRef.current) {
       audioRef.current.src = url;
       audioRef.current.load();
       
-      // Update index immediately (not async state)
-      // We'll use a ref to track this for the ended handler
+      // Update index immediately and sync ref for use in event handlers
       if (trackIndex >= 0) {
         setCurrentTrackIndex(trackIndex);
         currentTrackIndexRef.current = trackIndex;
@@ -163,7 +155,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   }, [playlist]);
 
   const setPlaylist = useCallback((tracks: Track[], startIndex: number) => {
-    console.log('[setPlaylist] Setting playlist with', tracks.length, 'tracks, starting at index', startIndex);
     setPlaylistState(tracks);
     setCurrentTrackIndex(startIndex);
   }, []);
