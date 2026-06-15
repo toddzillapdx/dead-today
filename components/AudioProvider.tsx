@@ -85,6 +85,11 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         currentTrackIndexRef.current = nextIndex;
         setCurrentTrackIndex(nextIndex);
         
+        // Update track info for UI
+        setCurrentTrackId(nextTrack.trackId);
+        setCurrentTrackTitle(nextTrack.title);
+        setCurrentTime(0);
+        
         if (audio && nextTrack) {
           audio.src = nextTrack.url;
           audio.load();
