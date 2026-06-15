@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect } from 'react';
 import { Track } from '@/lib/types';
 import { TrackList } from '@/components/TrackList';
 import { StarRating } from '@/components/StarRating';
@@ -25,7 +26,18 @@ export function ShowDetailClient({
   era,
   tracks,
 }: ShowDetailClientProps) {
-  const { loadTrack } = useAudio();
+  const { loadTrack, setPlaylist } = useAudio();
+
+  // Register the full playlist when tracks load
+  useEffect(() => {
+    if (tracks && tracks.length > 0) {
+      setPlaylist(tracks.map(t => ({
+        url: t.streamUrl,
+        title: t.title,
+        trackId: t.filename,
+      })), 0);
+    }
+  }, [tracks, setPlaylist]);
 
   const handleTrackClick = (track: Track) => {
     loadTrack(track.streamUrl, track.title, track.filename);
