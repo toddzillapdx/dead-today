@@ -1,14 +1,22 @@
 import { notFound } from 'next/navigation';
 import { ShowDetailClient } from '@/components/ShowDetailClient';
+import { metadataUrl, normalizeTracks } from '@/lib/archive';
 
 async function fetchShowMetadata(identifier: string) {
   try {
-    const res = await fetch(
-      `${process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://dead-today.vercel.app'}/api/metadata/${identifier}`,
-      { cache: 'no-store' }
-    );
+    const res = await fetch(metadataUrl(identifier), {
+      headers: { Accept: 'application/json' },
+      cache: 'no-store',
+    });
     if (!res.ok) return null;
-    return await res.json();
+    const data = await res.json();
+    if (!data || !data.files) return null;
+    
+    const tracks = normalizeTracks(identifier, data.files);
+    return {
+      metadata: data.metadata ?? {},
+      tracks,
+    };
   } catch {
     return null;
   }
