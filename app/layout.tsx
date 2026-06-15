@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Barlow_Condensed, Inter } from "next/font/google";
 import "./globals.css";
 import { AudioProvider } from "@/components/AudioProvider";
+import { MiniPlayer } from "@/components/MiniPlayer";
 
 // Display + UI typefaces (Design System v0.2 §3.1).
 const barlow = Barlow_Condensed({
@@ -34,6 +35,7 @@ export default function RootLayout({
       <body>
         <AudioProvider>
           {children}
+          <MiniPlayer />
         </AudioProvider>
       </body>
     </html>
