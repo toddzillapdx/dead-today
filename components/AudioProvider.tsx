@@ -2,6 +2,12 @@
 
 import React, { createContext, useContext, useState, useRef, useEffect, ReactNode } from 'react';
 
+export interface Track {
+  url: string;
+  title: string;
+  trackId: string;
+}
+
 export interface AudioContextType {
   isPlaying: boolean;
   currentTime: number;
@@ -15,6 +21,7 @@ export interface AudioContextType {
   seek: (time: number) => void;
   setVolume: (vol: number) => void;
   loadTrack: (url: string, title: string, trackId: string) => void;
+  setPlaylist: (tracks: Track[], startIndex: number) => void;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -26,27 +33,63 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const [volume, setVolumeState] = useState(0.8);
   const [currentTrackId, setCurrentTrackId] = useState<string | null>(null);
   const [currentTrackTitle, setCurrentTrackTitle] = useState('');
+  const [playlist, setPlaylistState] = useState<Track[]>([]);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(-1);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   // Create audio element only on client
-  const initAudio = () => {
+  useEffect(() => {
     if (!audioRef.current && typeof window !== 'undefined') {
       audioRef.current = new Audio();
       audioRef.current.volume = volume;
-
-      audioRef.current.addEventListener('play', () => setIsPlaying(true));
-      audioRef.current.addEventListener('pause', () => setIsPlaying(false));
-      audioRef.current.addEventListener('timeupdate', () => {
-        setCurrentTime(audioRef.current?.currentTime ?? 0);
-      });
-      audioRef.current.addEventListener('loadedmetadata', () => {
-        setDuration(audioRef.current?.duration ?? 0);
-      });
+      audioRef.current.crossOrigin = 'anonymous';
     }
-  };
+  }, []);
+
+  // Set up event listeners that depend on playlist state
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+
+    const handlePlay = () => setIsPlaying(true);
+    const handlePause = () => setIsPlaying(false);
+    const handleTimeUpdate = () => {
+      setCurrentTime(audio.currentTime);
+    };
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+    };
+    const handleEnded = () => {
+      // Auto-advance to next track
+      if (currentTrackIndex >= 0 && currentTrackIndex < playlist.length - 1) {
+        const nextTrack = playlist[currentTrackIndex + 1];
+        setCurrentTrackIndex(currentTrackIndex + 1);
+        if (audio && nextTrack) {
+          audio.src = nextTrack.url;
+          audio.load();
+          audio.play().catch(() => {});
+        }
+      } else {
+        setIsPlaying(false);
+      }
+    };
+
+    audio.addEventListener('play', handlePlay);
+    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('play', handlePlay);
+      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, [currentTrackIndex, playlist]);
 
   const play = () => {
-    initAudio();
     audioRef.current?.play().catch(() => {});
   };
 
@@ -69,7 +112,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   };
 
   const loadTrack = (url: string, title: string, trackId: string) => {
-    initAudio();
     setCurrentTrackId(trackId);
     setCurrentTrackTitle(title);
     setCurrentTime(0);
@@ -78,6 +120,11 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       audioRef.current.load();
       play();
     }
+  };
+
+  const setPlaylist = (tracks: Track[], startIndex: number) => {
+    setPlaylistState(tracks);
+    setCurrentTrackIndex(startIndex);
   };
 
   const value: AudioContextType = {
@@ -93,6 +140,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     seek,
     setVolume,
     loadTrack,
+    setPlaylist,
   };
 
   return (
