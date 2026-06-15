@@ -23,13 +23,13 @@ async function fetchShowMetadata(identifier: string) {
 }
 
 interface ShowParams {
-  params: {
+  params: Promise<{
     identifier: string;
-  };
+  }>;
 }
 
 export default async function ShowDetailPage({ params }: ShowParams) {
-  const { identifier } = params;
+  const { identifier } = await params;
   const showData = await fetchShowMetadata(identifier);
 
   if (!showData) {
