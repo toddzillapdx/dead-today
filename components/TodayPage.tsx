@@ -187,21 +187,25 @@ export function TodayPage({
             {shows.find((s) => s.identifier === selectedShowId) && (
               <div>
                 <h3 className="font-display font-bold text-xl mb-dt-4">
-                  Show Details
+                  {shows.find((s) => s.identifier === selectedShowId)?.date}
                 </h3>
-                <pre className="text-xs text-dt-text-muted overflow-auto">
-                  {JSON.stringify(
-                    shows.find((s) => s.identifier === selectedShowId),
-                    null,
-                    2
-                  )}
-                </pre>
-                <button
-                  onClick={() => setSelectedShowId(null)}
-                  className="mt-dt-4 px-dt-4 py-dt-2 bg-dt-red text-dt-bone rounded-dt-md text-sm font-semibold"
-                >
-                  Close
-                </button>
+                <p className="text-dt-text-muted mb-dt-4">
+                  {shows.find((s) => s.identifier === selectedShowId)?.venue}
+                </p>
+                <div className="flex gap-dt-3">
+                  <Link
+                    href={`/show/${selectedShowId}`}
+                    className="flex-1 px-dt-4 py-dt-2 bg-dt-red text-dt-bone rounded-dt-md text-sm font-semibold text-center hover:opacity-90 transition"
+                  >
+                    View Full Show
+                  </Link>
+                  <button
+                    onClick={() => setSelectedShowId(null)}
+                    className="px-dt-4 py-dt-2 border border-dt-text-muted text-dt-text-muted rounded-dt-md text-sm font-semibold hover:bg-dt-text-subtle hover:bg-opacity-10 transition"
+                  >
+                    Close
+                  </button>
+                </div>
               </div>
             )}
           </div>
