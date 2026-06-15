@@ -115,6 +115,13 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setCurrentTrackId(trackId);
     setCurrentTrackTitle(title);
     setCurrentTime(0);
+    
+    // Find and update the current track index in the playlist
+    const trackIndex = playlist.findIndex(t => t.trackId === trackId);
+    if (trackIndex >= 0) {
+      setCurrentTrackIndex(trackIndex);
+    }
+    
     if (audioRef.current) {
       audioRef.current.src = url;
       audioRef.current.load();
