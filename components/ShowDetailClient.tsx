@@ -78,23 +78,10 @@ export function ShowDetailClient({
         </div>
       </header>
 
-      {/* Setlist */}
-      <section className="mb-10">
-        <h2 className="text-2xl font-display font-bold uppercase mb-6">
-          Setlist
-        </h2>
-        <div className="bg-dt-text-subtle bg-opacity-5 rounded-lg p-6">
-          <p className="text-dt-text-subtle text-sm mb-4">
-            Setlist parsing from unstructured Archive data coming soon.
-            Click a track below to play.
-          </p>
-        </div>
-      </section>
-
-      {/* Full Track List */}
+      {/* Track List */}
       <section>
         <h2 className="text-2xl font-display font-bold uppercase mb-6">
-          All Tracks
+          Tracks
         </h2>
         <TrackList tracks={tracks} onTrackClick={handleTrackClick} />
       </section>
