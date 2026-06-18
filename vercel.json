@@ -1,0 +1,9 @@
+{
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/dead-today",
+      "permanent": false
+    }
+  ]
+}
