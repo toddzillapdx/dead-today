@@ -21,11 +21,12 @@ export interface AudioContextType {
   seek: (time: number) => void;
   setVolume: (vol: number) => void;
   loadTrack: (url: string, title: string, trackId: string) => void;
-  setPlaylist: (tracks: Track[], startIndex: number) => void;
+  setPlaylist: (tracks: Track[], startIndex: number, identifier?: string) => void;
   skipNext: () => void;
   skipPrevious: () => void;
   hasNext: boolean;
   hasPrevious: boolean;
+  currentShowIdentifier: string | null;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -39,6 +40,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const [currentTrackTitle, setCurrentTrackTitle] = useState('');
   const [playlist, setPlaylistState] = useState<Track[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(-1);
+  const [currentShowIdentifier, setCurrentShowIdentifier] = useState<string | null>(null);
   
   // Refs to track current state for use in event handlers
   const currentTrackIndexRef = useRef(-1);
@@ -163,9 +165,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
   }, [playlist]);
 
-  const setPlaylist = useCallback((tracks: Track[], startIndex: number) => {
+  const setPlaylist = useCallback((tracks: Track[], startIndex: number, identifier?: string) => {
     setPlaylistState(tracks);
     setCurrentTrackIndex(startIndex);
+    if (identifier) setCurrentShowIdentifier(identifier);
   }, []);
 
   const skipNext = useCallback(() => {
@@ -234,6 +237,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     skipPrevious,
     hasNext,
     hasPrevious,
+    currentShowIdentifier,
   };
 
   return (

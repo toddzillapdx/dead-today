@@ -9,7 +9,7 @@ interface ExpandedPlayerProps {
 }
 
 export function ExpandedPlayer({ onCollapse, showDate, showVenue }: ExpandedPlayerProps) {
-  const { isPlaying, currentTime, duration, currentTrackTitle, volume, togglePlay, seek, setVolume, skipNext, skipPrevious, hasNext, hasPrevious } = useAudio();
+  const { isPlaying, currentTime, duration, currentTrackTitle, volume, togglePlay, seek, setVolume, skipNext, skipPrevious, hasNext, hasPrevious, currentShowIdentifier } = useAudio();
 
   const formatTime = (seconds: number) => {
     if (!isFinite(seconds)) return '0:00';
@@ -33,11 +33,21 @@ export function ExpandedPlayer({ onCollapse, showDate, showVenue }: ExpandedPlay
         </svg>
       </button>
 
-      {/* Album Art Placeholder */}
-      <div className="w-64 h-64 rounded-lg bg-gradient-to-br from-dt-red to-dt-black mb-8 flex flex-col items-center justify-center text-center p-6">
-        <div className="text-4xl mb-4">♪</div>
-        {showDate && <p className="text-dt-bone text-sm font-medium">{showDate}</p>}
-        {showVenue && <p className="text-dt-text-subtle text-xs">{showVenue}</p>}
+      {/* Album Art */}
+      <div className="w-64 h-64 rounded-lg bg-gradient-to-br from-dt-red to-dt-black mb-8 overflow-hidden flex items-center justify-center">
+        {currentShowIdentifier ? (
+          <img
+            src={`https://archive.org/services/img/${currentShowIdentifier}`}
+            alt="Show artwork"
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = 'none';
+              (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="text-4xl">♪</div>';
+            }}
+          />
+        ) : (
+          <div className="text-4xl">♪</div>
+        )}
       </div>
 
       {/* Track Title */}
