@@ -2,9 +2,10 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { Show, Era } from "@/lib/types";
-import { ShowCard } from "@/components/ShowCard";
+import { ShowGroupCard } from "@/components/ShowGroupCard";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { EmptyState } from "@/components/EmptyState";
+import { groupShowsByDate } from "@/lib/groupShows";
 import { ERA_RANGES } from "@/lib/era";
 import Link from "next/link";
 
@@ -207,11 +208,14 @@ export function BrowsePage() {
       </div>
 
       {/* Results count */}
-      {!loading && shows.length > 0 && (
-        <p className="text-dt-text-muted text-xs">
-          Showing {shows.length} of {totalFound} shows
-        </p>
-      )}
+      {!loading && shows.length > 0 && (() => {
+        const groups = groupShowsByDate(shows);
+        return (
+          <p className="text-dt-text-muted text-xs">
+            Showing {groups.length} {groups.length === 1 ? "show" : "shows"} ({shows.length} recordings) of {totalFound} total
+          </p>
+        );
+      })()}
 
       {/* Error state */}
       {error && (
@@ -232,8 +236,8 @@ export function BrowsePage() {
       {/* Results */}
       {shows.length > 0 && (
         <div className="space-y-dt-3">
-          {shows.map((show) => (
-            <ShowCard key={show.identifier} show={show} />
+          {groupShowsByDate(shows).map((group) => (
+            <ShowGroupCard key={group.date} group={group} />
           ))}
         </div>
       )}

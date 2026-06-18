@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Show } from "@/lib/types";
-import { ShowCard } from "@/components/ShowCard";
+import { ShowGroupCard } from "@/components/ShowGroupCard";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { EmptyState } from "@/components/EmptyState";
+import { groupShowsByDate, ShowGroup } from "@/lib/groupShows";
 import { cache } from "@/lib/cache";
 import Link from "next/link";
 
@@ -48,7 +49,6 @@ export function TodayPage({
   const [shows, setShows] = useState<Show[]>(initialShows);
   const [loading, setLoading] = useState(initialShows.length === 0);
   const [err, setErr] = useState<string | null>(error);
-  const [selectedShowId, setSelectedShowId] = useState<string | null>(null);
 
   useEffect(() => {
     if (initialShows.length > 0) return;
@@ -96,9 +96,9 @@ export function TodayPage({
     fetchTodayShows();
   }, [initialDate, initialShows]);
 
-  // Featured card: top-rated show
-  const featuredShow = shows[0];
-  const otherShows = shows.slice(1);
+  const groups = groupShowsByDate(shows);
+  const featuredGroup = groups[0];
+  const otherGroups = groups.slice(1);
 
   return (
     <div className="space-y-dt-6">
@@ -107,8 +107,8 @@ export function TodayPage({
         <h2 className="font-display font-bold text-3xl mb-dt-2">On This Day</h2>
         <p className="text-dt-text-muted text-sm">
           Dead history for {formatDateDisplay(initialDate)}
-          {!loading && shows.length > 0 && (
-            <span className="ml-dt-2">· {shows.length} shows</span>
+          {!loading && groups.length > 0 && (
+            <span className="ml-dt-2">· {groups.length} {groups.length === 1 ? "show" : "shows"}</span>
           )}
         </p>
       </div>
@@ -141,32 +141,24 @@ export function TodayPage({
       )}
 
       {/* Featured card */}
-      {!loading && featuredShow && (
+      {!loading && featuredGroup && (
         <div>
           <div className="text-xs uppercase tracking-wide text-dt-text-muted font-semibold mb-dt-2">
             ★ Featured
           </div>
-          <ShowCard
-            show={featuredShow}
-            featured={true}
-            onClick={() => setSelectedShowId(featuredShow.identifier)}
-          />
+          <ShowGroupCard group={featuredGroup} featured={true} />
         </div>
       )}
 
       {/* Other shows */}
-      {!loading && otherShows.length > 0 && (
+      {!loading && otherGroups.length > 0 && (
         <div>
           <div className="text-xs uppercase tracking-wide text-dt-text-muted font-semibold mb-dt-2">
             More from this day
           </div>
           <div className="space-y-dt-3">
-            {otherShows.map((show) => (
-              <ShowCard
-                key={show.identifier}
-                show={show}
-                onClick={() => setSelectedShowId(show.identifier)}
-              />
+            {otherGroups.map((group) => (
+              <ShowGroupCard key={group.date} group={group} />
             ))}
           </div>
         </div>
@@ -178,38 +170,6 @@ export function TodayPage({
           variant="empty-date"
           date={formatDateDisplay(initialDate)}
         />
-      )}
-
-      {/* Selected show detail (modal/redirect could go here) */}
-      {selectedShowId && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-dt-4">
-          <div className="bg-dt-surface rounded-dt-lg p-dt-6 max-w-2xl w-full max-h-96 overflow-y-auto">
-            {shows.find((s) => s.identifier === selectedShowId) && (
-              <div>
-                <h3 className="font-display font-bold text-xl mb-dt-4">
-                  {shows.find((s) => s.identifier === selectedShowId)?.date}
-                </h3>
-                <p className="text-dt-text-muted mb-dt-4">
-                  {shows.find((s) => s.identifier === selectedShowId)?.venue}
-                </p>
-                <div className="flex gap-dt-3">
-                  <Link
-                    href={`/show/${selectedShowId}`}
-                    className="flex-1 px-dt-4 py-dt-2 bg-dt-red text-dt-bone rounded-dt-md text-sm font-semibold text-center hover:opacity-90 transition"
-                  >
-                    View Full Show
-                  </Link>
-                  <button
-                    onClick={() => setSelectedShowId(null)}
-                    className="px-dt-4 py-dt-2 border border-dt-text-muted text-dt-text-muted rounded-dt-md text-sm font-semibold hover:bg-dt-text-subtle hover:bg-opacity-10 transition"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
       )}
     </div>
   );
