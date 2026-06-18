@@ -22,6 +22,10 @@ export interface AudioContextType {
   setVolume: (vol: number) => void;
   loadTrack: (url: string, title: string, trackId: string) => void;
   setPlaylist: (tracks: Track[], startIndex: number) => void;
+  skipNext: () => void;
+  skipPrevious: () => void;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -164,6 +168,54 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setCurrentTrackIndex(startIndex);
   }, []);
 
+  const skipNext = useCallback(() => {
+    const index = currentTrackIndexRef.current;
+    const tracks = playlistRef.current;
+    if (index >= 0 && index < tracks.length - 1) {
+      const next = tracks[index + 1];
+      const nextIndex = index + 1;
+      currentTrackIndexRef.current = nextIndex;
+      setCurrentTrackIndex(nextIndex);
+      setCurrentTrackId(next.trackId);
+      setCurrentTrackTitle(next.title);
+      setCurrentTime(0);
+      if (audioRef.current) {
+        audioRef.current.src = next.url;
+        audioRef.current.load();
+        audioRef.current.play().catch(() => {});
+      }
+    }
+  }, []);
+
+  const skipPrevious = useCallback(() => {
+    const audio = audioRef.current;
+    if (audio && audio.currentTime > 3) {
+      audio.currentTime = 0;
+      return;
+    }
+    const index = currentTrackIndexRef.current;
+    const tracks = playlistRef.current;
+    if (index > 0) {
+      const prev = tracks[index - 1];
+      const prevIndex = index - 1;
+      currentTrackIndexRef.current = prevIndex;
+      setCurrentTrackIndex(prevIndex);
+      setCurrentTrackId(prev.trackId);
+      setCurrentTrackTitle(prev.title);
+      setCurrentTime(0);
+      if (audio) {
+        audio.src = prev.url;
+        audio.load();
+        audio.play().catch(() => {});
+      }
+    } else if (audio) {
+      audio.currentTime = 0;
+    }
+  }, []);
+
+  const hasNext = currentTrackIndex >= 0 && currentTrackIndex < playlist.length - 1;
+  const hasPrevious = currentTrackIndex > 0;
+
   const value: AudioContextType = {
     isPlaying,
     currentTime,
@@ -178,6 +230,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     setVolume,
     loadTrack,
     setPlaylist,
+    skipNext,
+    skipPrevious,
+    hasNext,
+    hasPrevious,
   };
 
   return (

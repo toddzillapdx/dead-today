@@ -9,7 +9,7 @@ interface ExpandedPlayerProps {
 }
 
 export function ExpandedPlayer({ onCollapse, showDate, showVenue }: ExpandedPlayerProps) {
-  const { isPlaying, currentTime, duration, currentTrackTitle, volume, togglePlay, seek, setVolume } = useAudio();
+  const { isPlaying, currentTime, duration, currentTrackTitle, volume, togglePlay, seek, setVolume, skipNext, skipPrevious, hasNext, hasPrevious } = useAudio();
 
   const formatTime = (seconds: number) => {
     if (!isFinite(seconds)) return '0:00';
@@ -64,6 +64,18 @@ export function ExpandedPlayer({ onCollapse, showDate, showVenue }: ExpandedPlay
 
       {/* Controls */}
       <div className="flex items-center gap-8">
+        {/* Previous */}
+        <button
+          onClick={skipPrevious}
+          className="w-10 h-10 flex items-center justify-center text-dt-bone hover:text-dt-red transition disabled:opacity-30"
+          aria-label="Previous track"
+          disabled={!hasPrevious && currentTime < 3}
+        >
+          <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+          </svg>
+        </button>
+
         {/* Play/Pause */}
         <button
           onClick={togglePlay}
@@ -79,6 +91,18 @@ export function ExpandedPlayer({ onCollapse, showDate, showVenue }: ExpandedPlay
               <path d="M8 5v14l11-7z" />
             </svg>
           )}
+        </button>
+
+        {/* Next */}
+        <button
+          onClick={skipNext}
+          className="w-10 h-10 flex items-center justify-center text-dt-bone hover:text-dt-red transition disabled:opacity-30"
+          aria-label="Next track"
+          disabled={!hasNext}
+        >
+          <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+            <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+          </svg>
         </button>
 
         {/* Volume Control */}
