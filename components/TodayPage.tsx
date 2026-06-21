@@ -7,7 +7,6 @@ import { SkeletonCard } from "@/components/SkeletonCard";
 import { EmptyState } from "@/components/EmptyState";
 import { groupShowsByDate, ShowGroup } from "@/lib/groupShows";
 import { cache } from "@/lib/cache";
-import Link from "next/link";
 
 interface TodayPageProps {
   initialShows?: Show[];
@@ -112,17 +111,6 @@ export function TodayPage({
           )}
         </p>
       </div>
-
-      {/* Navigation hint */}
-      <p className="text-dt-text-subtle text-xs">
-        <Link
-          href="/browse"
-          className="text-dt-red hover:text-dt-red hover:opacity-80 underline"
-        >
-          Browse all shows
-        </Link>{" "}
-        or filter by era/year
-      </p>
 
       {/* Loading state */}
       {loading && (
