@@ -6,9 +6,10 @@ interface ExpandedPlayerProps {
   onCollapse?: () => void;
   showDate?: string;
   showVenue?: string;
+  showCity?: string;
 }
 
-export function ExpandedPlayer({ onCollapse, showDate, showVenue }: ExpandedPlayerProps) {
+export function ExpandedPlayer({ onCollapse, showDate, showVenue, showCity }: ExpandedPlayerProps) {
   const { isPlaying, currentTime, duration, currentTrackTitle, volume, togglePlay, seek, setVolume, skipNext, skipPrevious, hasNext, hasPrevious, currentShowIdentifier } = useAudio();
 
   const formatTime = (seconds: number) => {
@@ -33,21 +34,20 @@ export function ExpandedPlayer({ onCollapse, showDate, showVenue }: ExpandedPlay
         </svg>
       </button>
 
-      {/* Album Art */}
-      <div className="w-64 h-64 rounded-lg bg-gradient-to-br from-dt-red to-dt-black mb-8 overflow-hidden flex items-center justify-center">
-        {currentShowIdentifier ? (
-          <img
-            src={`https://archive.org/services/img/${currentShowIdentifier}`}
-            alt="Show artwork"
-            className="w-full h-full object-cover"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = 'none';
-              (e.target as HTMLImageElement).parentElement!.innerHTML = '<div class="text-4xl">♪</div>';
-            }}
-          />
-        ) : (
-          <div className="text-4xl">♪</div>
-        )}
+      {/* Album Art - Tape Spines Theme */}
+      <div className="w-64 h-64 rounded-lg bg-gradient-to-br from-dt-red to-dt-black mb-8 overflow-hidden flex flex-col items-center justify-between p-6 relative"
+        style={{
+          backgroundImage: 'linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.2) 50%, transparent 100%), repeating-linear-gradient(90deg, #8B0000 0px, #8B0000 4px, #1a1a1a 4px, #1a1a1a 8px)',
+          backgroundSize: '100% 100%, 16px 100%'
+        }}
+      >
+        <div className="absolute inset-0 flex items-center justify-center opacity-10">
+          <div className="text-6xl font-bold text-dt-bone">♪</div>
+        </div>
+        <div className="relative z-10 w-full h-full flex flex-col items-center justify-end p-4 bg-gradient-to-t from-dt-black via-transparent to-transparent">
+          {showVenue && <h3 className="text-dt-bone font-semibold text-sm text-center leading-tight">{showVenue}</h3>}
+          {showCity && showDate && <p className="text-dt-text-muted text-xs text-center mt-1">{showCity} · {showDate}</p>}
+        </div>
       </div>
 
       {/* Track Title */}
