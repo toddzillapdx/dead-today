@@ -56,15 +56,13 @@ export function ShowDetailClient({
       {/* Show Header */}
       <header className="mb-10">
         <div className="flex items-start gap-6 mb-6">
-          {/* Archive.org item image */}
-          <div className="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden bg-gradient-to-br from-dt-red to-dt-black">
-            <img
-              src={`https://archive.org/services/img/${identifier}`}
-              alt={`${venue} - ${date}`}
-              className="w-full h-full object-cover"
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            />
-          </div>
+        <div className="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden">
+          <img
+            src="/dead-today/tape-spines.jpg"
+            alt={`${venue} - ${date}`}
+            className="w-full h-full object-cover"
+          />
+        </div>
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <h1 className="text-4xl font-display font-bold uppercase">
