@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { ShowDetailClient } from '@/components/ShowDetailClient';
 import { metadataUrl, normalizeTracks } from '@/lib/archive';
+import { deriveEra } from '@/lib/era';
 
 async function fetchShowMetadata(identifier: string) {
   try {
@@ -39,13 +40,17 @@ export default async function ShowDetailPage({ params }: ShowParams) {
   const { metadata, tracks } = showData;
   
   // Normalize metadata to Show-like object
+  const dateStr = metadata.date || 'Unknown Date';
+  const isoDate = dateStr.slice(0, 10); // Handle "1977-05-08T..." format
+  const year = parseInt(isoDate.slice(0, 4), 10) || 0;
+  
   const show = {
     identifier: metadata.identifier || identifier,
-    date: metadata.date || 'Unknown Date',
+    date: isoDate,
     venue: metadata.venue || 'Unknown Venue',
     city: metadata.coverage || metadata.type || '',
     avgRating: 3.5, // Placeholder (not in metadata)
-    era: 'Unknown Era',
+    era: year > 0 ? deriveEra(year) : 'Unknown Era',
     title: metadata.title || 'Unknown Show',
   };
 
