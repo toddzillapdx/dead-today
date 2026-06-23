@@ -110,6 +110,9 @@ export function TodayPage({
             <span className="ml-dt-2">· {groups.length} {groups.length === 1 ? "show" : "shows"}</span>
           )}
         </p>
+        <p className="text-dt-text-subtle text-xs mt-dt-2">
+          Thank you to archive.org and Deadheads around the world for sharing their recordings!
+        </p>
       </div>
 
       {/* Loading state */}
