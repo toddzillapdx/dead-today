@@ -21,7 +21,7 @@ export interface AudioContextType {
   seek: (time: number) => void;
   setVolume: (vol: number) => void;
   loadTrack: (url: string, title: string, trackId: string) => void;
-  setPlaylist: (tracks: Track[], startIndex: number, identifier?: string) => void;
+  setPlaylist: (tracks: Track[], startIndex: number, identifier?: string, showInfo?: { venue?: string; date?: string; city?: string }) => void;
   skipNext: () => void;
   skipPrevious: () => void;
   hasNext: boolean;
@@ -41,6 +41,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   const [playlist, setPlaylistState] = useState<Track[]>([]);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(-1);
   const [currentShowIdentifier, setCurrentShowIdentifier] = useState<string | null>(null);
+  const [showVenue, setShowVenue] = useState<string>('');
+  const [showDate, setShowDate] = useState<string>('');
+  const [showCity, setShowCity] = useState<string>('');
   
   // Refs to track current state for use in event handlers
   const currentTrackIndexRef = useRef(-1);
@@ -143,10 +146,35 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     if (audioRef.current) audioRef.current.volume = vol;
   };
 
+  // Update MediaSession metadata (for CarPlay, lock screen, etc.)
+  const updateMediaSession = useCallback((title: string) => {
+    if (typeof window !== 'undefined' && 'mediaSession' in navigator) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: title,
+        artist: showVenue || 'Grateful Dead',
+        album: showCity && showDate ? `${showCity}, ${showDate}` : 'Dead Today',
+        artwork: [
+          {
+            src: '/dead-today/tape-spines.jpg',
+            sizes: '256x256',
+            type: 'image/jpeg'
+          }
+        ]
+      });
+
+      // Set action handlers
+      navigator.mediaSession.setActionHandler('play', () => play());
+      navigator.mediaSession.setActionHandler('pause', () => pause());
+      navigator.mediaSession.setActionHandler('nexttrack', () => skipNext());
+      navigator.mediaSession.setActionHandler('previoustrack', () => skipPrevious());
+    }
+  }, [showVenue, showDate, showCity]);
+
   const loadTrack = useCallback((url: string, title: string, trackId: string) => {
     setCurrentTrackId(trackId);
     setCurrentTrackTitle(title);
     setCurrentTime(0);
+    updateMediaSession(title);
     
     // Find the track index in the playlist
     const trackIndex = playlist.findIndex(t => t.trackId === trackId);
@@ -163,12 +191,17 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       
       play();
     }
-  }, [playlist]);
+  }, [playlist, updateMediaSession]);
 
-  const setPlaylist = useCallback((tracks: Track[], startIndex: number, identifier?: string) => {
+  const setPlaylist = useCallback((tracks: Track[], startIndex: number, identifier?: string, showInfo?: { venue?: string; date?: string; city?: string }) => {
     setPlaylistState(tracks);
     setCurrentTrackIndex(startIndex);
     if (identifier) setCurrentShowIdentifier(identifier);
+    if (showInfo) {
+      setShowVenue(showInfo.venue || '');
+      setShowDate(showInfo.date || '');
+      setShowCity(showInfo.city || '');
+    }
   }, []);
 
   const skipNext = useCallback(() => {
@@ -181,6 +214,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       setCurrentTrackIndex(nextIndex);
       setCurrentTrackId(next.trackId);
       setCurrentTrackTitle(next.title);
+      updateMediaSession(next.title);
       setCurrentTime(0);
       if (audioRef.current) {
         audioRef.current.src = next.url;
@@ -188,7 +222,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         audioRef.current.play().catch(() => {});
       }
     }
-  }, []);
+  }, [updateMediaSession]);
 
   const skipPrevious = useCallback(() => {
     const audio = audioRef.current;
@@ -205,6 +239,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       setCurrentTrackIndex(prevIndex);
       setCurrentTrackId(prev.trackId);
       setCurrentTrackTitle(prev.title);
+      updateMediaSession(prev.title);
       setCurrentTime(0);
       if (audio) {
         audio.src = prev.url;
@@ -214,7 +249,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     } else if (audio) {
       audio.currentTime = 0;
     }
-  }, []);
+  }, [updateMediaSession]);
 
   const hasNext = currentTrackIndex >= 0 && currentTrackIndex < playlist.length - 1;
   const hasPrevious = currentTrackIndex > 0;

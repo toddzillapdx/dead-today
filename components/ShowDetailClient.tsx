@@ -35,9 +35,13 @@ export function ShowDetailClient({
         url: t.streamUrl,
         title: t.title,
         trackId: t.filename,
-      })), 0, identifier);
+      })), 0, identifier, {
+        venue: venue,
+        date: date,
+        city: city
+      });
     }
-  }, [tracks, setPlaylist]);
+  }, [tracks, setPlaylist, identifier, venue, date, city]);
 
   const handleTrackClick = (track: Track) => {
     loadTrack(track.streamUrl, track.title, track.filename);
