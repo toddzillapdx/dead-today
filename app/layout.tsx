@@ -23,6 +23,33 @@ export const metadata: Metadata = {
   title: "Dead Today",
   description:
     "On this day in Grateful Dead history — explore concerts from the Internet Archive.",
+  openGraph: {
+    title: "Dead Today",
+    description:
+      "On this day in Grateful Dead history — explore concerts from the Internet Archive.",
+    url: "https://www.toddames.com/dead-today/",
+    siteName: "Dead Today",
+    images: [
+      {
+        url: "/dead-today-og.png",
+        width: 1200,
+        height: 630,
+        alt: "Dead Today - Grateful Dead Concert Archive",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Dead Today",
+    description:
+      "On this day in Grateful Dead history — explore concerts from the Internet Archive.",
+    images: ["/dead-today-og.png"],
+  },
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({

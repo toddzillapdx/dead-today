@@ -171,13 +171,14 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   }, [showVenue, showDate, showCity]);
 
   const loadTrack = useCallback((url: string, title: string, trackId: string) => {
+    // Update metadata synchronously FIRST
     setCurrentTrackId(trackId);
     setCurrentTrackTitle(title);
     setCurrentTime(0);
     updateMediaSession(title);
     
-    // Find the track index in the playlist
-    const trackIndex = playlist.findIndex(t => t.trackId === trackId);
+    // Find the track index in the playlist using ref (avoids closure issues)
+    const trackIndex = playlistRef.current.findIndex(t => t.trackId === trackId);
     
     if (audioRef.current) {
       audioRef.current.src = url;
@@ -191,7 +192,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       
       play();
     }
-  }, [playlist, updateMediaSession]);
+  }, [updateMediaSession]);
 
   const setPlaylist = useCallback((tracks: Track[], startIndex: number, identifier?: string, showInfo?: { venue?: string; date?: string; city?: string }) => {
     setPlaylistState(tracks);
