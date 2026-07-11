@@ -124,6 +124,13 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
+  // Update page title when track changes (for Apple Watch / CarPlay)
+  useEffect(() => {
+    if (typeof window !== 'undefined' && currentTrackTitle) {
+      document.title = `${currentTrackTitle} - Dead Today`;
+    }
+  }, [currentTrackTitle]);
+
   const play = () => {
     audioRef.current?.play().catch(() => {});
   };
@@ -148,11 +155,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
 
   // Update MediaSession metadata (for CarPlay, lock screen, etc.)
   const updateMediaSession = useCallback((title: string) => {
-    // Update page title for Apple Watch / CarPlay / social sharing
-    if (typeof window !== 'undefined') {
-      document.title = `${title} - Dead Today`;
-    }
-    
     if (typeof window !== 'undefined' && 'mediaSession' in navigator) {
       navigator.mediaSession.metadata = new MediaMetadata({
         title: title,
