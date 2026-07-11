@@ -9,9 +9,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET(
   _req: NextRequest,
-  { params }: { params: { identifier: string } },
+  { params }: { params: Promise<{ identifier: string }> },
 ) {
-  const { identifier } = params;
+  const { identifier } = await params;
   if (!identifier) {
     return NextResponse.json({ error: "Missing identifier" }, { status: 400 });
   }
