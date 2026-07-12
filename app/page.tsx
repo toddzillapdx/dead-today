@@ -5,18 +5,12 @@ import { LightningBolt } from "@/components/LightningBolt";
 import { TodayPage } from "@/components/TodayPage";
 import { normalizeShows } from "@/lib/archive";
 import { buildOnThisDayUrl } from "@/lib/archive";
+import { getLocalDateString } from "@/lib/geo";
 
 export const dynamic = "force-dynamic";
 
-function monthDayToday(): string {
-  const d = new Date();
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  return `${mm}-${dd}`;
-}
-
 async function getTodayShows() {
-  const md = monthDayToday();
+  const md = await getLocalDateString();
   try {
     const res = await fetch(buildOnThisDayUrl(md), {
       headers: { Accept: "application/json" },
