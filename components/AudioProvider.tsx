@@ -27,6 +27,9 @@ export interface AudioContextType {
   hasNext: boolean;
   hasPrevious: boolean;
   currentShowIdentifier: string | null;
+  showVenue: string;
+  showDate: string;
+  showCity: string;
 }
 
 const AudioContext = createContext<AudioContextType | undefined>(undefined);
@@ -281,6 +284,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     hasNext,
     hasPrevious,
     currentShowIdentifier,
+    showVenue,
+    showDate,
+    showCity,
   };
 
   return (
