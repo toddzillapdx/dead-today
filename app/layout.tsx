@@ -47,7 +47,7 @@ export const metadata: Metadata = {
     images: ["https://dead-today-build.vercel.app/dead-today-og.png"],
   },
   icons: {
-    icon: "/dead-today/favicon.ico",
+    icon: "/dead-today/favicon.svg",
     apple: "/dead-today/apple-touch-icon.png",
   },
 };
