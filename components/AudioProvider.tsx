@@ -71,6 +71,175 @@ export function AudioProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  const play = useCallback(() => {
+    audioRef.current?.play().catch(() => {});
+  }, []);
+
+  const pause = useCallback(() => {
+    audioRef.current?.pause();
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    if (isPlaying) pause();
+    else play();
+  }, [isPlaying, pause, play]);
+
+  const seek = useCallback((time: number) => {
+    if (audioRef.current) audioRef.current.currentTime = time;
+  }, []);
+
+  const setVolume = useCallback((vol: number) => {
+    setVolumeState(vol);
+    if (audioRef.current) audioRef.current.volume = vol;
+  }, []);
+
+  // Update MediaSession metadata (for CarPlay, lock screen, etc.)
+  // This function is called AFTER loadedmetadata event to ensure audio element is ready
+  const updateMediaSession = useCallback((title: string, audio: HTMLAudioElement | null) => {
+    if (typeof window !== 'undefined' && 'mediaSession' in navigator) {
+      // 1. Force iOS to completely drop the previous track from its cache
+      navigator.mediaSession.metadata = null;
+
+      // 2. Assign new metadata with absolute URL for artwork
+      navigator.mediaSession.metadata = new MediaMetadata({
+        title: title,
+        artist: showVenue || 'Grateful Dead',
+        album: showCity && showDate ? `${showCity}, ${showDate}` : 'Dead Today',
+        artwork: [
+          {
+            // Use absolute URL so CarPlay can successfully resolve the image
+            src: 'https://www.toddames.com/dead-today/tape-spines.jpg',
+            sizes: '512x512',
+            type: 'image/jpeg'
+          }
+        ]
+      });
+
+      // 3. Explicitly tell Apple's subsystem that a fresh timeline state has started
+      navigator.mediaSession.playbackState = 'playing';
+      
+      if (audio && 'setPositionState' in navigator.mediaSession) {
+        navigator.mediaSession.setPositionState({
+          duration: audio.duration || 0,
+          playbackRate: audio.playbackRate || 1,
+          position: audio.currentTime || 0
+        });
+      }
+
+      // Set action handlers
+      navigator.mediaSession.setActionHandler('play', () => play());
+      navigator.mediaSession.setActionHandler('pause', () => pause());
+      // Note: skipNext and skipPrevious refs will be resolved at call time
+    }
+  }, [showVenue, showDate, showCity, play, pause]);
+
+  // Helper to bind metadata update to loadedmetadata event
+  const bindMetadataUpdate = useCallback((audio: HTMLAudioElement, title: string) => {
+    const updateMetaOnceLoaded = () => {
+      updateMediaSession(title, audio);
+      audio.removeEventListener('loadedmetadata', updateMetaOnceLoaded);
+    };
+    audio.addEventListener('loadedmetadata', updateMetaOnceLoaded, { once: true });
+  }, [updateMediaSession]);
+
+  const loadTrack = useCallback((url: string, title: string, trackId: string) => {
+    // Update track info for UI
+    setCurrentTrackId(trackId);
+    setCurrentTrackTitle(title);
+    setCurrentTime(0);
+    
+    // Find the track index in the playlist using ref (avoids closure issues)
+    const trackIndex = playlistRef.current.findIndex(t => t.trackId === trackId);
+    
+    if (audioRef.current) {
+      audioRef.current.src = url;
+      audioRef.current.load();
+      
+      // Update index immediately and sync ref for use in event handlers
+      if (trackIndex >= 0) {
+        setCurrentTrackIndex(trackIndex);
+        currentTrackIndexRef.current = trackIndex;
+      }
+      
+      // Bind metadata update to loadedmetadata event so iOS recognizes the audio is ready
+      bindMetadataUpdate(audioRef.current, title);
+      
+      play();
+    }
+  }, [bindMetadataUpdate, play]);
+
+  const setPlaylist = useCallback((tracks: Track[], startIndex: number, identifier?: string, showInfo?: { venue?: string; date?: string; city?: string }) => {
+    setPlaylistState(tracks);
+    setCurrentTrackIndex(startIndex);
+    if (identifier) setCurrentShowIdentifier(identifier);
+    if (showInfo) {
+      setShowVenue(showInfo.venue || '');
+      setShowDate(showInfo.date || '');
+      setShowCity(showInfo.city || '');
+    }
+  }, []);
+
+  const skipNext = useCallback(() => {
+    const index = currentTrackIndexRef.current;
+    const tracks = playlistRef.current;
+    if (index >= 0 && index < tracks.length - 1) {
+      const next = tracks[index + 1];
+      const nextIndex = index + 1;
+      currentTrackIndexRef.current = nextIndex;
+      setCurrentTrackIndex(nextIndex);
+      setCurrentTrackId(next.trackId);
+      setCurrentTrackTitle(next.title);
+      setCurrentTime(0);
+      if (audioRef.current) {
+        audioRef.current.src = next.url;
+        audioRef.current.load();
+        
+        // Bind metadata update to loadedmetadata event
+        bindMetadataUpdate(audioRef.current, next.title);
+        
+        audioRef.current.play().catch(() => {});
+      }
+    }
+  }, [bindMetadataUpdate]);
+
+  const skipPrevious = useCallback(() => {
+    const audio = audioRef.current;
+    if (audio && audio.currentTime > 3) {
+      audio.currentTime = 0;
+      return;
+    }
+    const index = currentTrackIndexRef.current;
+    const tracks = playlistRef.current;
+    if (index > 0) {
+      const prev = tracks[index - 1];
+      const prevIndex = index - 1;
+      currentTrackIndexRef.current = prevIndex;
+      setCurrentTrackIndex(prevIndex);
+      setCurrentTrackId(prev.trackId);
+      setCurrentTrackTitle(prev.title);
+      setCurrentTime(0);
+      if (audio) {
+        audio.src = prev.url;
+        audio.load();
+        
+        // Bind metadata update to loadedmetadata event
+        bindMetadataUpdate(audio, prev.title);
+        
+        audio.play().catch(() => {});
+      }
+    } else if (audio) {
+      audio.currentTime = 0;
+    }
+  }, [bindMetadataUpdate]);
+
+  // Fix up action handlers now that skipNext/skipPrevious exist
+  useEffect(() => {
+    if (typeof window !== 'undefined' && 'mediaSession' in navigator) {
+      navigator.mediaSession.setActionHandler('nexttrack', () => skipNext());
+      navigator.mediaSession.setActionHandler('previoustrack', () => skipPrevious());
+    }
+  }, [skipNext, skipPrevious]);
+
   // Set up event listeners (minimal deps)
   useEffect(() => {
     const audio = audioRef.current;
@@ -105,6 +274,15 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         if (audio && nextTrack) {
           audio.src = nextTrack.url;
           audio.load();
+          
+          // Bind metadata update to loadedmetadata event
+          // Create inline to avoid hoisting issues with bindMetadataUpdate
+          const updateMetaOnceLoaded = () => {
+            updateMediaSession(nextTrack.title, audio);
+            audio.removeEventListener('loadedmetadata', updateMetaOnceLoaded);
+          };
+          audio.addEventListener('loadedmetadata', updateMetaOnceLoaded, { once: true });
+          
           audio.play().catch(() => {});
         }
       } else {
@@ -125,7 +303,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
       audio.removeEventListener('ended', handleEnded);
     };
-  }, []);
+  }, [updateMediaSession]);
 
   // Update page title when track changes (for Apple Watch / CarPlay)
   useEffect(() => {
@@ -133,134 +311,6 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       document.title = `${currentTrackTitle} - Dead Today`;
     }
   }, [currentTrackTitle]);
-
-  const play = () => {
-    audioRef.current?.play().catch(() => {});
-  };
-
-  const pause = () => {
-    audioRef.current?.pause();
-  };
-
-  const togglePlay = () => {
-    if (isPlaying) pause();
-    else play();
-  };
-
-  const seek = (time: number) => {
-    if (audioRef.current) audioRef.current.currentTime = time;
-  };
-
-  const setVolume = (vol: number) => {
-    setVolumeState(vol);
-    if (audioRef.current) audioRef.current.volume = vol;
-  };
-
-  // Update MediaSession metadata (for CarPlay, lock screen, etc.)
-  const updateMediaSession = useCallback((title: string) => {
-    if (typeof window !== 'undefined' && 'mediaSession' in navigator) {
-      navigator.mediaSession.metadata = new MediaMetadata({
-        title: title,
-        artist: showVenue || 'Grateful Dead',
-        album: showCity && showDate ? `${showCity}, ${showDate}` : 'Dead Today',
-        artwork: [
-          {
-            src: '/dead-today/tape-spines.jpg',
-            sizes: '256x256',
-            type: 'image/jpeg'
-          }
-        ]
-      });
-
-      // Set action handlers
-      navigator.mediaSession.setActionHandler('play', () => play());
-      navigator.mediaSession.setActionHandler('pause', () => pause());
-      navigator.mediaSession.setActionHandler('nexttrack', () => skipNext());
-      navigator.mediaSession.setActionHandler('previoustrack', () => skipPrevious());
-    }
-  }, [showVenue, showDate, showCity]);
-
-  const loadTrack = useCallback((url: string, title: string, trackId: string) => {
-    // Update metadata synchronously FIRST
-    setCurrentTrackId(trackId);
-    setCurrentTrackTitle(title);
-    setCurrentTime(0);
-    updateMediaSession(title);
-    
-    // Find the track index in the playlist using ref (avoids closure issues)
-    const trackIndex = playlistRef.current.findIndex(t => t.trackId === trackId);
-    
-    if (audioRef.current) {
-      audioRef.current.src = url;
-      audioRef.current.load();
-      
-      // Update index immediately and sync ref for use in event handlers
-      if (trackIndex >= 0) {
-        setCurrentTrackIndex(trackIndex);
-        currentTrackIndexRef.current = trackIndex;
-      }
-      
-      play();
-    }
-  }, [updateMediaSession]);
-
-  const setPlaylist = useCallback((tracks: Track[], startIndex: number, identifier?: string, showInfo?: { venue?: string; date?: string; city?: string }) => {
-    setPlaylistState(tracks);
-    setCurrentTrackIndex(startIndex);
-    if (identifier) setCurrentShowIdentifier(identifier);
-    if (showInfo) {
-      setShowVenue(showInfo.venue || '');
-      setShowDate(showInfo.date || '');
-      setShowCity(showInfo.city || '');
-    }
-  }, []);
-
-  const skipNext = useCallback(() => {
-    const index = currentTrackIndexRef.current;
-    const tracks = playlistRef.current;
-    if (index >= 0 && index < tracks.length - 1) {
-      const next = tracks[index + 1];
-      const nextIndex = index + 1;
-      currentTrackIndexRef.current = nextIndex;
-      setCurrentTrackIndex(nextIndex);
-      setCurrentTrackId(next.trackId);
-      setCurrentTrackTitle(next.title);
-      updateMediaSession(next.title);
-      setCurrentTime(0);
-      if (audioRef.current) {
-        audioRef.current.src = next.url;
-        audioRef.current.load();
-        audioRef.current.play().catch(() => {});
-      }
-    }
-  }, [updateMediaSession]);
-
-  const skipPrevious = useCallback(() => {
-    const audio = audioRef.current;
-    if (audio && audio.currentTime > 3) {
-      audio.currentTime = 0;
-      return;
-    }
-    const index = currentTrackIndexRef.current;
-    const tracks = playlistRef.current;
-    if (index > 0) {
-      const prev = tracks[index - 1];
-      const prevIndex = index - 1;
-      currentTrackIndexRef.current = prevIndex;
-      setCurrentTrackIndex(prevIndex);
-      setCurrentTrackId(prev.trackId);
-      setCurrentTrackTitle(prev.title);
-      updateMediaSession(prev.title);
-      setCurrentTime(0);
-      if (audio) {
-        audio.src = prev.url;
-        audio.load();
-        audio.play().catch(() => {});
-      }
-    } else if (audio) {
-      audio.currentTime = 0;
-    }
-  }, [updateMediaSession]);
 
   const hasNext = currentTrackIndex >= 0 && currentTrackIndex < playlist.length - 1;
   const hasPrevious = currentTrackIndex > 0;
