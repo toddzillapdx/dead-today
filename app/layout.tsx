@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: "Dead Today",
     images: [
       {
-        url: "https://dead-today-build.vercel.app/dead-today-og.png",
+        url: "https://dead-today-build.vercel.app/dead-today/dead-today-og.png",
         width: 1200,
         height: 630,
         alt: "Dead Today - Grateful Dead Concert Archive",
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     title: "Dead Today",
     description:
       "On this day in Grateful Dead history — explore concerts from the Internet Archive.",
-    images: ["https://dead-today-build.vercel.app/dead-today-og.png"],
+    images: ["https://dead-today-build.vercel.app/dead-today/dead-today-og.png"],
   },
   icons: {
     icon: "/dead-today/favicon.svg",
