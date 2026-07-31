@@ -40,15 +40,12 @@ export function ExpandedPlayer({ onCollapse, showDate, showVenue, showCity }: Ex
         {showCity && showDate && <p className="text-dt-text-muted text-sm">{showCity} · {showDate}</p>}
       </div>
 
-      {/* Album Art - Tape Spines Image */}
-      <div className="w-64 h-64 rounded-lg overflow-hidden mb-8 shadow-lg bg-dt-surface">
+      {/* Album Art */}
+      <div className="w-64 h-64 rounded-lg overflow-hidden mb-8 shadow-lg bg-dt-black">
         <img
-          src="/dead-today/tape-spines.jpg"
-          alt="Grateful Dead tape spines"
-          className="w-full h-full object-cover"
-          onError={(e) => {
-            console.error('Failed to load tape image');
-          }}
+          src="/dead-today/bolt-artwork.png"
+          alt="Dead Today"
+          className="w-full h-full object-contain"
         />
       </div>
 
