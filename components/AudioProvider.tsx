@@ -107,9 +107,10 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         album: showCity && showDate ? `${showCity}, ${showDate}` : 'Dead Today',
         artwork: [
           {
-            src: 'https://www.toddames.com/dead-today/bolt-artwork.png',
+            // Use absolute URL so CarPlay can successfully resolve the image
+            src: 'https://www.toddames.com/dead-today/tape-spines.jpg',
             sizes: '512x512',
-            type: 'image/png'
+            type: 'image/jpeg'
           }
         ]
       });

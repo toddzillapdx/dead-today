@@ -60,11 +60,11 @@ export function ShowDetailClient({
       {/* Show Header */}
       <header className="mb-10">
         <div className="flex items-start gap-6 mb-6">
-        <div className="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden bg-dt-black">
+        <div className="flex-shrink-0 w-24 h-24 sm:w-32 sm:h-32 rounded-lg overflow-hidden">
           <img
-            src="/dead-today/bolt-artwork.png"
-            alt="Dead Today"
-            className="w-full h-full object-contain"
+            src="/dead-today/tape-spines.jpg"
+            alt={`${venue} - ${date}`}
+            className="w-full h-full object-cover"
           />
         </div>
           <div className="flex-1">
