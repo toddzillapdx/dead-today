@@ -15,7 +15,7 @@ interface FavoriteShow {
 
 const FAVORITES: FavoriteShow[] = [
   {
-    identifier: "gd77-04-27.sbd.samaritano.20331.sbefail.shnf",
+    identifier: "gd1977-04-27.sbd.braverman.7799.shnf",
     date: "1977-04-27",
     venue: "Capitol Theatre",
     city: "Passaic, NJ",
