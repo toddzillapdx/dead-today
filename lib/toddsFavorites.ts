@@ -33,11 +33,11 @@ const FAVORITES: FavoriteShow[] = [
       "Scarlet > Fire opens Set 2, then Playin' > Drums > Wheel > Morning Dew. One of the great Morning Dews ever. The whole second set is a monster.",
   },
   {
-    identifier: "gd1995-06-21.sndchk.fm.gmb.91352.flac16",
+    identifier: "gd1995-06-21.141512.OTS.AKG.Ackerman.Miller.Noel.t-flac.1648",
     date: "1995-06-21",
     venue: "Knickerbocker Arena",
     city: "Albany, NY",
-    sourceType: SourceType.SBD,
+    sourceType: SourceType.AUD,
     note:
       "Scarlet > Fire into Playing in the Band > Morning Dew. Last summer tour before Jerry died that August. Listen knowing what you know.",
   },
