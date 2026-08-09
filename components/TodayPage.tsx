@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Show } from "@/lib/types";
 import { ShowGroupCard } from "@/components/ShowGroupCard";
 import { SkeletonCard } from "@/components/SkeletonCard";
-import { EmptyState } from "@/components/EmptyState";
+import { ToddsFavorites } from "@/components/ToddsFavorites";
 import { groupShowsByDate, ShowGroup } from "@/lib/groupShows";
 import { cache } from "@/lib/cache";
 
@@ -155,13 +155,8 @@ export function TodayPage({
         </div>
       )}
 
-      {/* Empty state */}
-      {!loading && !err && shows.length === 0 && (
-        <EmptyState
-          variant="empty-date"
-          date={formatDateDisplay(initialDate)}
-        />
-      )}
+      {/* Empty state: Todd's Favorites fallback */}
+      {!loading && !err && shows.length === 0 && <ToddsFavorites />}
     </div>
   );
 }
