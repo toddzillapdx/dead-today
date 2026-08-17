@@ -11,7 +11,7 @@ import { cache } from "@/lib/cache";
 interface TodayPageProps {
   initialShows?: Show[];
   initialDate?: string;
-  error?: string | null;
+  initialArchiveDown?: boolean;
 }
 
 function monthDayToday(): string {
@@ -43,14 +43,13 @@ function formatDateDisplay(monthDay: string): string {
 export function TodayPage({
   initialShows = [],
   initialDate = monthDayToday(),
-  error = null,
+  initialArchiveDown = false,
 }: TodayPageProps) {
   const [shows, setShows] = useState<Show[]>(initialShows);
-  const [loading, setLoading] = useState(initialShows.length === 0);
-  const [err, setErr] = useState<string | null>(error);
+  const [loading, setLoading] = useState(initialShows.length === 0 && !initialArchiveDown);
 
   useEffect(() => {
-    if (initialShows.length > 0) return;
+    if (initialShows.length > 0 || initialArchiveDown) return;
 
     const fetchTodayShows = async () => {
       try {
@@ -68,11 +67,10 @@ export function TodayPage({
         );
 
         if (!res.ok) {
-          if (res.status === 404) {
-            setShows([]);
-          } else {
-            setErr("Failed to load shows");
-          }
+          // Either "no shows on this date" (404) or Archive.org is
+          // unreachable (503) — both fall back to Todd's Favorites below,
+          // no error message shown on the Today tab.
+          setShows([]);
           setLoading(false);
           return;
         }
@@ -86,14 +84,14 @@ export function TodayPage({
           await cache.setOnThisDay(initialDate, shows);
         }
       } catch {
-        setErr("Archive unreachable");
+        setShows([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchTodayShows();
-  }, [initialDate, initialShows]);
+  }, [initialDate, initialShows, initialArchiveDown]);
 
   const groups = groupShowsByDate(shows);
   const featuredGroup = groups[0];
@@ -124,13 +122,6 @@ export function TodayPage({
         </div>
       )}
 
-      {/* Error state */}
-      {err && (
-        <div className="p-dt-4 bg-dt-surface border border-dt border-opacity-30 rounded-dt-lg text-danger text-sm">
-          {err}
-        </div>
-      )}
-
       {/* Featured card */}
       {!loading && featuredGroup && (
         <div>
@@ -155,8 +146,8 @@ export function TodayPage({
         </div>
       )}
 
-      {/* Empty state: Todd's Favorites fallback */}
-      {!loading && !err && shows.length === 0 && <ToddsFavorites />}
+      {/* Empty state: Todd's Favorites fallback (also covers Archive.org outages) */}
+      {!loading && shows.length === 0 && <ToddsFavorites />}
     </div>
   );
 }

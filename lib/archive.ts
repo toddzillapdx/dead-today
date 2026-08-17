@@ -11,6 +11,21 @@ const ARCHIVE_SEARCH = "https://archive.org/advancedsearch.php";
 const ARCHIVE_METADATA = "https://archive.org/metadata";
 const ARCHIVE_DOWNLOAD = "https://archive.org/download";
 
+const ARCHIVE_TIMEOUT_MS = 10_000;
+
+// Wraps fetch() with a 10s timeout so a hung Archive.org request never hangs
+// the app. Throws (AbortError or the underlying network error) on failure —
+// callers should treat any thrown error here as "Archive.org unreachable".
+export async function fetchArchive(url: string, init?: RequestInit): Promise<Response> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), ARCHIVE_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: controller.signal });
+  } finally {
+    clearTimeout(timeoutId);
+  }
+}
+
 // Fields requested from Advanced Search (Data Architecture §2.1).
 export const SEARCH_FIELDS = [
   "identifier",

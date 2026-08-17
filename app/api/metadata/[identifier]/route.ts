@@ -3,7 +3,7 @@
 // Returns: normalized Track[] (MP3-only, sorted disc+track).
 
 import { NextRequest, NextResponse } from "next/server";
-import { metadataUrl, normalizeTracks } from "@/lib/archive";
+import { metadataUrl, normalizeTracks, fetchArchive } from "@/lib/archive";
 
 export const dynamic = "force-dynamic";
 
@@ -17,7 +17,7 @@ export async function GET(
   }
 
   try {
-    const res = await fetch(metadataUrl(identifier), {
+    const res = await fetchArchive(metadataUrl(identifier), {
       headers: { Accept: "application/json" },
       next: { revalidate: 604800 }, // 7 days — track lists rarely change
     });
@@ -35,6 +35,7 @@ export async function GET(
       metadata: data.metadata ?? null,
     });
   } catch {
-    return NextResponse.json({ error: "Not found" }, { status: 404 });
+    // Network failure or 10s timeout — Archive.org is unreachable.
+    return NextResponse.json({ error: "archive_unreachable" }, { status: 503 });
   }
 }

@@ -5,6 +5,7 @@ import { Show, Era } from "@/lib/types";
 import { ShowGroupCard } from "@/components/ShowGroupCard";
 import { SkeletonCard } from "@/components/SkeletonCard";
 import { EmptyState } from "@/components/EmptyState";
+import { ArchiveUnavailable } from "@/components/ArchiveUnavailable";
 import { groupShowsByDate } from "@/lib/groupShows";
 import { ERA_RANGES } from "@/lib/era";
 import Link from "next/link";
@@ -13,6 +14,7 @@ export function BrowsePage() {
   const [shows, setShows] = useState<Show[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [archiveDown, setArchiveDown] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedEra, setSelectedEra] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
@@ -30,6 +32,7 @@ export function BrowsePage() {
     async (q: string, era: string | null, year: string | null, offset = 0) => {
       setLoading(true);
       setError(null);
+      setArchiveDown(false);
 
       try {
         const params = new URLSearchParams();
@@ -40,7 +43,10 @@ export function BrowsePage() {
 
         const res = await fetch(`/api/shows?${params.toString()}`);
 
-        if (!res.status.toString().startsWith("2")) {
+        if (res.status === 503) {
+          setArchiveDown(true);
+          if (offset === 0) setShows([]);
+        } else if (!res.status.toString().startsWith("2")) {
           if (res.status === 404) {
             setShows(offset === 0 ? [] : shows);
             setHasMore(false);
@@ -56,7 +62,10 @@ export function BrowsePage() {
           setTotalFound(data.numFound || newShows.length);
         }
       } catch {
-        setError("Archive unreachable");
+        // Network failure reaching our own API — treat the same as
+        // Archive.org being unreachable.
+        setArchiveDown(true);
+        if (offset === 0) setShows([]);
       } finally {
         setLoading(false);
       }
@@ -217,8 +226,15 @@ export function BrowsePage() {
         );
       })()}
 
-      {/* Error state */}
-      {error && (
+      {/* Archive.org unavailable */}
+      {!loading && archiveDown && (
+        <ArchiveUnavailable
+          onRetry={() => performSearch(searchTerm, selectedEra, selectedYear, start)}
+        />
+      )}
+
+      {/* Error state (non-Archive errors) */}
+      {!archiveDown && error && (
         <div className="p-dt-4 bg-dt-surface border border-dt border-opacity-30 rounded-dt-lg text-danger text-sm">
           {error}
         </div>
@@ -257,7 +273,7 @@ export function BrowsePage() {
       )}
 
       {/* Empty state */}
-      {!loading && shows.length === 0 && !error && (
+      {!loading && shows.length === 0 && !error && !archiveDown && (
         <EmptyState variant="no-results" searchTerm={searchTerm} />
       )}
     </div>

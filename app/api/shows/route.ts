@@ -6,7 +6,7 @@
 // Returns: normalized Show[] sorted by avg_rating desc.
 
 import { NextRequest, NextResponse } from "next/server";
-import { buildOnThisDayUrl, buildBrowseUrl, normalizeShows } from "@/lib/archive";
+import { buildOnThisDayUrl, buildBrowseUrl, normalizeShows, fetchArchive } from "@/lib/archive";
 import { ERA_RANGES } from "@/lib/era";
 
 export const dynamic = "force-dynamic";
@@ -31,15 +31,15 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(url, {
+    const res = await fetchArchive(url, {
       headers: { Accept: "application/json" },
       // Cache at the edge briefly; client also caches in IndexedDB.
       next: { revalidate: 3600 },
     });
     if (!res.ok) {
       return NextResponse.json(
-        { error: "Archive.org unreachable" },
-        { status: 502 },
+        { error: "archive_unreachable" },
+        { status: 503 },
       );
     }
     const data = await res.json();
@@ -53,9 +53,10 @@ export async function GET(req: NextRequest) {
       numFound: data?.response?.numFound ?? shows.length,
     });
   } catch {
+    // Network failure or 10s timeout — Archive.org is unreachable.
     return NextResponse.json(
-      { error: "Archive.org unreachable" },
-      { status: 502 },
+      { error: "archive_unreachable" },
+      { status: 503 },
     );
   }
 }

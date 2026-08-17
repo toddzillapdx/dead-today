@@ -1,25 +1,42 @@
 import { notFound } from 'next/navigation';
 import { ShowDetailClient } from '@/components/ShowDetailClient';
-import { metadataUrl, normalizeTracks } from '@/lib/archive';
+import { ArchiveUnavailablePage } from '@/components/ArchiveUnavailablePage';
+import { metadataUrl, normalizeTracks, fetchArchive } from '@/lib/archive';
 import { deriveEra } from '@/lib/era';
 
-async function fetchShowMetadata(identifier: string) {
+interface ArchiveMetadata {
+  identifier?: string;
+  date?: string;
+  venue?: string;
+  coverage?: string;
+  type?: string;
+  title?: string;
+}
+
+type ShowMetadataResult =
+  | { status: 'ok'; metadata: ArchiveMetadata; tracks: ReturnType<typeof normalizeTracks> }
+  | { status: 'not_found' }
+  | { status: 'unavailable' };
+
+async function fetchShowMetadata(identifier: string): Promise<ShowMetadataResult> {
   try {
-    const res = await fetch(metadataUrl(identifier), {
+    const res = await fetchArchive(metadataUrl(identifier), {
       headers: { Accept: 'application/json' },
       cache: 'no-store',
     });
-    if (!res.ok) return null;
+    if (!res.ok) return { status: 'not_found' };
     const data = await res.json();
-    if (!data || !data.files) return null;
-    
+    if (!data || !data.files) return { status: 'not_found' };
+
     const tracks = normalizeTracks(identifier, data.files);
     return {
+      status: 'ok',
       metadata: data.metadata ?? {},
       tracks,
     };
   } catch {
-    return null;
+    // Network failure or 10s timeout — Archive.org is unreachable.
+    return { status: 'unavailable' };
   }
 }
 
@@ -33,12 +50,16 @@ export default async function ShowDetailPage({ params }: ShowParams) {
   const { identifier } = await params;
   const showData = await fetchShowMetadata(identifier);
 
-  if (!showData) {
+  if (showData.status === 'not_found') {
     notFound();
   }
 
+  if (showData.status === 'unavailable') {
+    return <ArchiveUnavailablePage />;
+  }
+
   const { metadata, tracks } = showData;
-  
+
   // Normalize metadata to Show-like object
   const dateStr = metadata.date || 'Unknown Date';
   const isoDate = dateStr.slice(0, 10); // Handle "1977-05-08T..." format

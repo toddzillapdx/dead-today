@@ -3,7 +3,7 @@
 
 import { LightningBolt } from "@/components/LightningBolt";
 import { TodayPage } from "@/components/TodayPage";
-import { normalizeShows } from "@/lib/archive";
+import { normalizeShows, fetchArchive } from "@/lib/archive";
 import { buildOnThisDayUrl } from "@/lib/archive";
 import { getLocalDateString } from "@/lib/geo";
 
@@ -12,24 +12,26 @@ export const dynamic = "force-dynamic";
 async function getTodayShows() {
   const md = await getLocalDateString();
   try {
-    const res = await fetch(buildOnThisDayUrl(md), {
+    const res = await fetchArchive(buildOnThisDayUrl(md), {
       headers: { Accept: "application/json" },
       cache: "no-store",
     });
-    if (!res.ok) return { md, shows: [], error: `Archive ${res.status}` };
+    if (!res.ok) return { md, shows: [], archiveDown: true };
     const data = await res.json();
     return {
       md,
       shows: normalizeShows(data?.response?.docs ?? []),
-      error: null,
+      archiveDown: false,
     };
   } catch {
-    return { md, shows: [], error: "Archive unreachable" };
+    // Network failure or 10s timeout — Archive.org is unreachable.
+    // TodayPage falls back to Todd's Favorites rather than showing an error.
+    return { md, shows: [], archiveDown: true };
   }
 }
 
 export default async function Home() {
-  const { md, shows, error } = await getTodayShows();
+  const { md, shows, archiveDown } = await getTodayShows();
 
   return (
     <main className="min-h-screen bg-dt-black text-dt-bone px-6 py-10 max-w-3xl mx-auto">
@@ -43,7 +45,7 @@ export default async function Home() {
       <TodayPage
         initialShows={shows}
         initialDate={md}
-        error={error}
+        initialArchiveDown={archiveDown}
       />
 
       <footer className="text-dt-text-subtle text-xs border-t border-dt pt-dt-6 mt-dt-10">
