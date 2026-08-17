@@ -24,11 +24,11 @@ const FAVORITES: FavoriteShow[] = [
       "Two weeks before Cornell on the same spring tour. Scarlet > Fire into Terrapin into Morning Dew. The band was locked in and nobody talks about it.",
   },
   {
-    identifier: "gd1991-08-17.141289.sbd.miller.flac2496",
+    identifier: "gd1991-08-17.senn-ME80.wklitz.94196.flac16",
     date: "1991-08-17",
     venue: "Shoreline Amphitheatre",
     city: "Mountain View, CA",
-    sourceType: SourceType.SBD,
+    sourceType: SourceType.AUD,
     note:
       "The opening is absolute fire: Help > Slip > Franklin's into Wang Dang Doodle. Bruce Hornsby on piano for this one.",
   },

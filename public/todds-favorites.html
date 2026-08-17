@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>Todd's Favorites — Dead Today</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="A bookmarkable page of Grateful Dead shows Todd always comes back to.">
+<meta name="description" content="A bookmarkable page of Grateful Dead shows Todd always comes back to — plays right here.">
 <meta name="theme-color" content="#1a1a1a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -41,7 +41,7 @@
   body {
     font-family: "Inter", system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
-    padding: clamp(28px, 6vw, 72px) 20px 80px;
+    padding: clamp(28px, 6vw, 72px) 20px 120px;
   }
 
   a { color: inherit; }
@@ -129,12 +129,12 @@
   .stubs {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 28px;
   }
 
   .stub {
     display: grid;
-    grid-template-columns: 100px 1fr;
+    grid-template-columns: 132px 1fr;
     background: var(--dt-surface);
     border: 1px solid var(--dt-border);
     border-radius: 10px;
@@ -151,12 +151,12 @@
     position: relative;
     background: var(--dt-raised);
     border-right: 2px dashed var(--dt-border-strong);
-    padding: 20px 10px;
+    padding: 22px 14px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 10px;
     text-align: center;
   }
 
@@ -176,121 +176,97 @@
   .stub-year {
     font-family: "Barlow Condensed", sans-serif;
     font-weight: 800;
-    font-size: 2.2rem;
+    font-size: 2.6rem;
     line-height: 0.85;
     color: var(--dt-red);
   }
 
   .stub-date {
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 10.5px;
-    letter-spacing: 0.06em;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
     color: var(--dt-text-muted);
     text-transform: uppercase;
   }
 
-  /* ---- Collapsed header (mirrors ShowGroupCard) ---- */
-
-  .stub-body { display: flex; flex-direction: column; }
-
-  .stub-header {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
-    background: none;
-    border: none;
-    text-align: left;
-    cursor: pointer;
-    padding: 18px 20px;
-    color: inherit;
-  }
-
-  .stub-header:hover { background: var(--dt-raised); }
-
-  .stub-header-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .venue-block h2 {
-    font-family: "Barlow Condensed", sans-serif;
-    font-weight: 700;
-    font-size: 1.3rem;
-    letter-spacing: 0.01em;
-    margin: 0 0 2px;
-    line-height: 1.15;
-    color: var(--dt-bone);
-  }
-
-  .city {
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 11.5px;
-    color: var(--dt-text-muted);
-    letter-spacing: 0.02em;
-  }
-
-  .rec-pill {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--dt-black);
-    border: 1px solid var(--dt-border-strong);
-    border-radius: 999px;
-    padding: 4px 10px 4px 12px;
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 11px;
-    color: var(--dt-text-muted);
-    white-space: nowrap;
-  }
-
-  .rec-pill svg {
-    width: 10px;
-    height: 10px;
-    fill: var(--dt-text-muted);
-    transition: transform 0.2s ease;
-  }
-
-  .stub.expanded .rec-pill svg { transform: rotate(180deg); }
-
-  .stub-header-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .stars {
-    display: inline-flex;
-    gap: 1px;
-  }
-
-  .stars svg { width: 12px; height: 12px; }
-  .stars svg.filled { fill: var(--dt-red); }
-  .stars svg.empty { fill: none; stroke: var(--dt-text-subtle); stroke-width: 1.5; }
-
-  .best-rated {
-    font-size: 11px;
-    color: var(--dt-text-subtle);
-  }
-
   .stub-source {
+    margin-top: 4px;
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: 10px;
+    font-size: 10.5px;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.08em;
     border-radius: 4px;
-    padding: 1px 7px;
+    padding: 2px 8px;
   }
 
   .stub-source.sbd { background: var(--dt-sbd-bg); color: var(--dt-sbd-text); }
   .stub-source.aud { background: var(--dt-aud-bg); color: var(--dt-aud-text); }
   .stub-source.mtx { background: var(--dt-matrix-bg); color: var(--dt-matrix-text); }
 
-  /* ---- Expanded details ---- */
+  .stub-body {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .stub-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    padding: 24px 22px 24px 24px;
+    color: inherit;
+  }
+
+  .stub-header:hover .venue-block h2 { color: var(--dt-red); }
+
+  .venue-block h2 {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.01em;
+    margin: 0 0 2px;
+    line-height: 1.1;
+    color: var(--dt-bone);
+    transition: color 0.15s ease;
+  }
+
+  .city {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    color: var(--dt-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .chevron {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--dt-border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .chevron svg {
+    width: 11px;
+    height: 11px;
+    fill: var(--dt-text-muted);
+  }
+
+  .stub.expanded .chevron {
+    transform: rotate(180deg);
+    border-color: var(--dt-red);
+    background: var(--dt-red);
+  }
+
+  .stub.expanded .chevron svg { fill: var(--dt-bone); }
 
   .stub-details {
     display: grid;
@@ -298,19 +274,27 @@
     transition: grid-template-rows 0.25s ease;
   }
 
-  .stub.expanded .stub-details { grid-template-rows: 1fr; }
+  .stub.expanded .stub-details {
+    grid-template-rows: 1fr;
+  }
 
   .stub-details-inner {
     overflow: hidden;
-    border-top: 1px solid var(--dt-border);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0 26px 0 24px;
+  }
+
+  .stub.expanded .stub-details-inner {
+    padding-bottom: 24px;
   }
 
   .note {
-    font-size: 0.9rem;
-    line-height: 1.6;
+    font-size: 0.95rem;
+    line-height: 1.62;
     color: var(--dt-bone);
     margin: 0;
-    padding: 16px 20px 4px;
   }
 
   .note em {
@@ -318,47 +302,120 @@
     color: var(--dt-text-muted);
   }
 
-  /* Individual recording row — mirrors the expanded ShowGroupCard list item */
-  .rec-row {
+  .stub-footer {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     gap: 12px;
-    width: 100%;
-    background: none;
-    border: none;
-    color: inherit;
-    text-align: left;
-    cursor: pointer;
-    padding: 14px 20px;
-    text-decoration: none;
+    padding-top: 14px;
+    border-top: 1px solid var(--dt-border);
   }
 
-  .rec-row:hover { background: var(--dt-raised); }
-
-  .rec-row-main { flex: 1; min-width: 0; }
-
-  .rec-row-title {
-    font-size: 0.85rem;
-    font-weight: 500;
-    color: var(--dt-bone);
-    margin-bottom: 3px;
-  }
-
-  .rec-row-meta {
+  .tag {
     font-family: ui-monospace, "SF Mono", Menlo, monospace;
     font-size: 10.5px;
     color: var(--dt-text-subtle);
-    letter-spacing: 0.02em;
+    letter-spacing: 0.03em;
   }
 
-  .rec-row-arrow {
-    flex-shrink: 0;
-    color: var(--dt-red);
+  .site-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+    color: var(--dt-text-subtle);
+    text-decoration: none;
+  }
+
+  .site-link:hover { color: var(--dt-text-muted); }
+
+  /* ---- Track list ---- */
+
+  .tracks {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .tracks-label {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--dt-text-subtle);
+    padding: 14px 0 8px;
+  }
+
+  .track-row {
     display: flex;
     align-items: center;
+    gap: 10px;
+    width: 100%;
+    background: none;
+    border: none;
+    color: var(--dt-bone);
+    text-align: left;
+    cursor: pointer;
+    padding: 8px 6px;
+    border-radius: 6px;
+    font-size: 0.85rem;
   }
 
-  .rec-row-arrow svg { width: 14px; height: 14px; }
+  .track-row:hover { background: var(--dt-raised); }
+
+  .track-row.active {
+    background: var(--dt-raised);
+    color: var(--dt-red);
+  }
+
+  .track-icon {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1px solid var(--dt-border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .track-row.active .track-icon {
+    border-color: var(--dt-red);
+    background: var(--dt-red);
+  }
+
+  .track-icon svg { width: 9px; height: 9px; fill: currentColor; }
+  .track-row:not(.active) .track-icon svg { fill: var(--dt-text-muted); }
+  .track-row.active .track-icon svg { fill: var(--dt-bone); }
+
+  .track-title {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-length {
+    flex-shrink: 0;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    color: var(--dt-text-subtle);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tracks-status {
+    padding: 10px 6px;
+    font-size: 0.82rem;
+    color: var(--dt-text-subtle);
+  }
+
+  .tracks-status.error a {
+    color: var(--dt-red);
+    text-decoration: underline;
+  }
 
   /* ---- Footer ---- */
 
@@ -391,13 +448,104 @@
 
   footer a.site:hover { color: var(--dt-red); border-color: var(--dt-red); }
 
+  /* ---- Mini player ---- */
+
+  .mini-player {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 18px;
+    background: var(--dt-black);
+    border-top: 1px solid var(--dt-red);
+    transform: translateY(100%);
+    transition: transform 0.25s ease;
+    z-index: 10;
+  }
+
+  .mini-player.visible { transform: translateY(0); }
+
+  .mp-btn {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    color: var(--dt-bone);
+    cursor: pointer;
+    padding: 6px;
+  }
+
+  .mp-btn:disabled { opacity: 0.3; cursor: default; }
+  .mp-btn svg { width: 16px; height: 16px; fill: currentColor; }
+
+  .mp-play {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--dt-red);
+    color: var(--dt-bone);
+  }
+
+  .mp-play svg { width: 16px; height: 16px; }
+
+  .mp-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .mp-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mp-sub {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10.5px;
+    color: var(--dt-text-muted);
+  }
+
+  .mp-progress {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    flex: 2;
+  }
+
+  .mp-time {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10.5px;
+    color: var(--dt-text-muted);
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+    width: 34px;
+  }
+
+  .mp-time.end { text-align: right; }
+
+  .mp-progress input[type="range"] {
+    flex: 1;
+    accent-color: var(--dt-red);
+  }
+
+  @media (min-width: 560px) {
+    .mp-progress { display: flex; }
+  }
+
   @media (max-width: 480px) {
     .stub { grid-template-columns: 1fr; }
     .stub-spine {
       flex-direction: row;
       border-right: none;
       border-bottom: 2px dashed var(--dt-border-strong);
-      padding: 14px 18px;
+      padding: 16px 18px;
       justify-content: space-between;
     }
     .stub-spine::before,
@@ -407,7 +555,8 @@
     }
     .stub-spine::before { left: -11px; top: auto; }
     .stub-spine::after { right: -11px; }
-    .stub-year { font-size: 1.8rem; }
+    .stub-year { font-size: 2rem; }
+    .mini-player { padding: 10px 14px; gap: 10px; }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -423,109 +572,81 @@
       </svg>
       <div class="kicker">Dead Today — Personal Reference</div>
       <h1>Todd's<br><span>Favorites</span></h1>
-      <p class="dek">Two shows I come back to. Tap a ticket to open it, then pick the recording to hear it — same as on Dead Today.</p>
+      <p class="dek">Two shows I come back to. Bookmark this page and it'll always be here — tracks play right on it.</p>
       <span class="bookmark-hint"><kbd>&#8984;</kbd><kbd>D</kbd> to bookmark this page</span>
     </header>
 
     <div class="stubs">
 
       <!-- Show 1 -->
-      <article class="stub">
+      <article class="stub" data-identifier="gd1977-04-27.sbd.braverman.7799.shnf" data-show-label="Capitol Theatre &middot; 4/27/77" data-archive-url="https://archive.org/details/gd1977-04-27.sbd.braverman.7799.shnf">
         <div class="stub-spine">
           <div>
             <div class="stub-year">1977</div>
             <div class="stub-date">Apr 27</div>
           </div>
+          <span class="stub-source sbd">SBD</span>
         </div>
         <div class="stub-body">
           <button type="button" class="stub-header" aria-expanded="false">
-            <div class="stub-header-top">
-              <div class="venue-block">
-                <h2>Capitol Theatre</h2>
-                <div class="city">Passaic, NJ</div>
-              </div>
-              <span class="rec-pill">
-                1 recording
-                <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-              </span>
+            <div class="venue-block">
+              <h2>Capitol Theatre</h2>
+              <div class="city">Passaic, NJ</div>
             </div>
-            <div class="stub-header-bottom">
-              <span class="stub-source sbd">SBD</span>
-              <span style="display:flex; align-items:center; gap:6px;">
-                <span class="stars" aria-hidden="true">
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                </span>
-                <span class="best-rated">Todd's pick</span>
-              </span>
-            </div>
+            <span class="chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </span>
           </button>
           <div class="stub-details">
             <div class="stub-details-inner">
               <p class="note">Two weeks before Cornell, on the same spring tour. Scarlet &gt; Fire into Terrapin into Morning Dew. The band was locked in and nobody talks about it.</p>
-              <a class="rec-row" href="https://dead-today-build.vercel.app/dead-today/show/gd1977-04-27.sbd.braverman.7799.shnf" target="_blank" rel="noopener">
-                <div class="rec-row-main">
-                  <div class="rec-row-title">Grateful Dead Live at Capitol Theatre on 1977-04-27</div>
-                  <div class="rec-row-meta">SBD &middot; Braverman transfer</div>
-                </div>
-                <span class="rec-row-arrow" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </span>
-              </a>
+              <div class="tracks" data-tracks>
+                <div class="tracks-label">Tracks</div>
+                <div class="tracks-status">Loading tracks&hellip;</div>
+              </div>
+              <div class="stub-footer">
+                <span class="tag">Braverman transfer</span>
+                <a class="site-link" href="https://archive.org/details/gd1977-04-27.sbd.braverman.7799.shnf" target="_blank" rel="noopener">
+                  archive.org listing &nearr;
+                </a>
+              </div>
             </div>
           </div>
         </div>
       </article>
 
       <!-- Show 2 -->
-      <article class="stub">
+      <article class="stub" data-identifier="gd1991-08-17.senn-ME80.wklitz.94196.flac16" data-show-label="Shoreline Amphitheatre &middot; 8/17/91" data-archive-url="https://archive.org/details/gd1991-08-17.senn-ME80.wklitz.94196.flac16">
         <div class="stub-spine">
           <div>
             <div class="stub-year">1991</div>
             <div class="stub-date">Aug 17</div>
           </div>
+          <span class="stub-source aud">AUD</span>
         </div>
         <div class="stub-body">
           <button type="button" class="stub-header" aria-expanded="false">
-            <div class="stub-header-top">
-              <div class="venue-block">
-                <h2>Shoreline Amphitheatre</h2>
-                <div class="city">Mountain View, CA</div>
-              </div>
-              <span class="rec-pill">
-                1 recording
-                <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
-              </span>
+            <div class="venue-block">
+              <h2>Shoreline Amphitheatre</h2>
+              <div class="city">Mountain View, CA</div>
             </div>
-            <div class="stub-header-bottom">
-              <span class="stub-source sbd">SBD</span>
-              <span style="display:flex; align-items:center; gap:6px;">
-                <span class="stars" aria-hidden="true">
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                  <svg class="filled" viewBox="0 0 20 20"><path d="M10 1l2.6 6.2L19 8l-5 4.5L15.5 19 10 15.3 4.5 19 6 12.5 1 8l6.4-.8z"/></svg>
-                </span>
-                <span class="best-rated">Todd's pick</span>
-              </span>
-            </div>
+            <span class="chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </span>
           </button>
           <div class="stub-details">
             <div class="stub-details-inner">
               <p class="note">The opener is absolute fire: Help &gt; Slip &gt; Franklin's into Wang Dang Doodle. <em>Bruce Hornsby sits in on piano for this one.</em></p>
-              <a class="rec-row" href="https://dead-today-build.vercel.app/dead-today/show/gd1991-08-17.141289.sbd.miller.flac2496" target="_blank" rel="noopener">
-                <div class="rec-row-main">
-                  <div class="rec-row-title">Grateful Dead Live at Shoreline Amphitheatre on 1991-08-17</div>
-                  <div class="rec-row-meta">SBD &middot; Miller transfer</div>
-                </div>
-                <span class="rec-row-arrow" aria-hidden="true">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                </span>
-              </a>
+              <div class="tracks" data-tracks>
+                <div class="tracks-label">Tracks</div>
+                <div class="tracks-status">Loading tracks&hellip;</div>
+              </div>
+              <div class="stub-footer">
+                <span class="tag">Litzenberger taper transfer</span>
+                <a class="site-link" href="https://archive.org/details/gd1991-08-17.senn-ME80.wklitz.94196.flac16" target="_blank" rel="noopener">
+                  archive.org listing &nearr;
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -539,14 +660,249 @@
     </footer>
   </div>
 
+  <div class="mini-player" id="miniPlayer">
+    <button class="mp-btn" id="mpPrev" aria-label="Previous track" disabled>
+      <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+    </button>
+    <button class="mp-btn mp-play" id="mpPlay" aria-label="Play">
+      <svg id="mpPlayIcon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <button class="mp-btn" id="mpNext" aria-label="Next track" disabled>
+      <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+    </button>
+    <div class="mp-info">
+      <div class="mp-title" id="mpTitle">&mdash;</div>
+      <div class="mp-sub" id="mpSub">&mdash;</div>
+    </div>
+    <div class="mp-progress">
+      <span class="mp-time" id="mpCurrent">0:00</span>
+      <input type="range" id="mpSeek" min="0" max="0" value="0" step="1" aria-label="Seek">
+      <span class="mp-time end" id="mpDuration">0:00</span>
+    </div>
+  </div>
+
+  <audio id="audio" preload="none"></audio>
+
   <script>
     (function () {
       "use strict";
-      document.querySelectorAll(".stub-header").forEach(function (header) {
+
+      var audio = document.getElementById("audio");
+      var miniPlayer = document.getElementById("miniPlayer");
+      var mpPlay = document.getElementById("mpPlay");
+      var mpPlayIcon = document.getElementById("mpPlayIcon");
+      var mpPrev = document.getElementById("mpPrev");
+      var mpNext = document.getElementById("mpNext");
+      var mpTitle = document.getElementById("mpTitle");
+      var mpSub = document.getElementById("mpSub");
+      var mpSeek = document.getElementById("mpSeek");
+      var mpCurrent = document.getElementById("mpCurrent");
+      var mpDuration = document.getElementById("mpDuration");
+
+      var PLAY_ICON = '<path d="M8 5v14l11-7z"/>';
+      var PAUSE_ICON = '<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>';
+
+      var shows = {};        // identifier -> { label, tracks: [], listEl }
+      var currentShowId = null;
+      var currentIndex = -1;
+
+      function formatTime(sec) {
+        if (!isFinite(sec) || sec < 0) return "0:00";
+        var m = Math.floor(sec / 60);
+        var s = Math.floor(sec % 60);
+        return m + ":" + (s < 10 ? "0" : "") + s;
+      }
+
+      function isMp3(file) {
+        var fmt = (file.format || "").toLowerCase();
+        return fmt.indexOf("mp3") !== -1 || /\.mp3$/i.test(file.name);
+      }
+
+      function inferDisc(filename) {
+        var m = filename.match(/d(\d+)t\d+/i);
+        return m ? parseInt(m[1], 10) : 1;
+      }
+
+      function loadShowTracks(article) {
+        var identifier = article.getAttribute("data-identifier");
+        var archiveUrl = article.getAttribute("data-archive-url");
+        var container = article.querySelector("[data-tracks]");
+        var statusEl = container.querySelector(".tracks-status");
+
+        if (shows[identifier].loaded) return;
+        shows[identifier].loaded = true;
+
+        fetch("https://archive.org/metadata/" + identifier)
+          .then(function (res) {
+            if (!res.ok) throw new Error("bad response");
+            return res.json();
+          })
+          .then(function (data) {
+            var files = (data && data.files) || [];
+            var tracks = files
+              .filter(isMp3)
+              .map(function (f) {
+                return {
+                  filename: f.name,
+                  title: f.title || f.name.replace(/\.mp3$/i, ""),
+                  trackNumber: parseInt(f.track, 10) || 0,
+                  disc: inferDisc(f.name),
+                  length: f.length || "",
+                  url: "https://archive.org/download/" + identifier + "/" + encodeURIComponent(f.name),
+                };
+              })
+              .sort(function (a, b) {
+                return a.disc - b.disc || a.trackNumber - b.trackNumber;
+              });
+
+            if (tracks.length === 0) {
+              statusEl.textContent = "No streamable tracks found for this recording.";
+              return;
+            }
+
+            shows[identifier].tracks = tracks;
+            renderTrackList(identifier);
+          })
+          .catch(function () {
+            statusEl.innerHTML =
+              'Couldn\'t load tracks right now. <a href="' +
+              archiveUrl +
+              '" target="_blank" rel="noopener">Open on archive.org &rarr;</a>';
+            statusEl.parentElement.classList.add("error");
+          });
+      }
+
+      function renderTrackList(identifier) {
+        var show = shows[identifier];
+        var container = show.container;
+        container.querySelectorAll(".track-row, .tracks-status").forEach(function (el) {
+          el.remove();
+        });
+
+        show.tracks.forEach(function (track, i) {
+          var row = document.createElement("button");
+          row.type = "button";
+          row.className = "track-row";
+          row.setAttribute("data-index", i);
+          row.innerHTML =
+            '<span class="track-icon"><svg viewBox="0 0 24 24">' + PLAY_ICON + '</svg></span>' +
+            '<span class="track-title">' + escapeHtml(track.title) + '</span>' +
+            '<span class="track-length">' + escapeHtml(track.length) + '</span>';
+          row.addEventListener("click", function () {
+            playTrack(identifier, i);
+          });
+          container.appendChild(row);
+        });
+      }
+
+      function escapeHtml(str) {
+        var div = document.createElement("div");
+        div.textContent = str;
+        return div.innerHTML;
+      }
+
+      function updateActiveRow() {
+        document.querySelectorAll(".track-row").forEach(function (row) {
+          row.classList.remove("active");
+        });
+        if (!currentShowId) return;
+        var container = shows[currentShowId].container;
+        var row = container.querySelector('.track-row[data-index="' + currentIndex + '"]');
+        if (row) row.classList.add("active");
+      }
+
+      function playTrack(identifier, index) {
+        var show = shows[identifier];
+        if (!show || !show.tracks[index]) return;
+
+        currentShowId = identifier;
+        currentIndex = index;
+        var track = show.tracks[index];
+
+        audio.src = track.url;
+        audio.play().catch(function () {});
+
+        mpTitle.textContent = track.title;
+        mpSub.textContent = show.label;
+        miniPlayer.classList.add("visible");
+        updateActiveRow();
+        updateNavButtons();
+      }
+
+      function updateNavButtons() {
+        if (!currentShowId) return;
+        var tracks = shows[currentShowId].tracks;
+        mpPrev.disabled = false;
+        mpNext.disabled = currentIndex >= tracks.length - 1;
+      }
+
+      mpPlay.addEventListener("click", function () {
+        if (!currentShowId) return;
+        if (audio.paused) audio.play().catch(function () {});
+        else audio.pause();
+      });
+
+      mpPrev.addEventListener("click", function () {
+        if (!currentShowId) return;
+        if (audio.currentTime > 3) {
+          audio.currentTime = 0;
+          return;
+        }
+        if (currentIndex > 0) playTrack(currentShowId, currentIndex - 1);
+        else audio.currentTime = 0;
+      });
+
+      mpNext.addEventListener("click", function () {
+        if (!currentShowId) return;
+        var tracks = shows[currentShowId].tracks;
+        if (currentIndex < tracks.length - 1) playTrack(currentShowId, currentIndex + 1);
+      });
+
+      audio.addEventListener("play", function () {
+        mpPlayIcon.outerHTML = '<svg id="mpPlayIcon" viewBox="0 0 24 24">' + PAUSE_ICON + '</svg>';
+        mpPlayIcon = document.getElementById("mpPlayIcon");
+      });
+
+      audio.addEventListener("pause", function () {
+        mpPlayIcon.outerHTML = '<svg id="mpPlayIcon" viewBox="0 0 24 24">' + PLAY_ICON + '</svg>';
+        mpPlayIcon = document.getElementById("mpPlayIcon");
+      });
+
+      audio.addEventListener("timeupdate", function () {
+        mpCurrent.textContent = formatTime(audio.currentTime);
+        if (isFinite(audio.duration)) {
+          mpSeek.max = String(Math.floor(audio.duration));
+          mpSeek.value = String(Math.floor(audio.currentTime));
+        }
+      });
+
+      audio.addEventListener("loadedmetadata", function () {
+        mpDuration.textContent = formatTime(audio.duration);
+        mpSeek.max = String(Math.floor(audio.duration) || 0);
+      });
+
+      audio.addEventListener("ended", function () {
+        if (!currentShowId) return;
+        var tracks = shows[currentShowId].tracks;
+        if (currentIndex < tracks.length - 1) playTrack(currentShowId, currentIndex + 1);
+      });
+
+      mpSeek.addEventListener("input", function () {
+        audio.currentTime = parseInt(mpSeek.value, 10) || 0;
+      });
+
+      document.querySelectorAll(".stub[data-identifier]").forEach(function (article) {
+        var identifier = article.getAttribute("data-identifier");
+        var label = article.getAttribute("data-show-label");
+        var container = article.querySelector("[data-tracks]");
+
+        shows[identifier] = { label: label, tracks: [], container: container, loaded: false };
+
+        var header = article.querySelector(".stub-header");
         header.addEventListener("click", function () {
-          var article = header.closest(".stub");
           var expanded = article.classList.toggle("expanded");
           header.setAttribute("aria-expanded", expanded ? "true" : "false");
+          if (expanded) loadShowTracks(article);
         });
       });
     })();
