@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Todd's Favorites — Dead Today</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A bookmarkable page of Grateful Dead shows Todd always comes back to, with links to stream on Dead Today.">
+<meta name="theme-color" content="#1a1a1a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dt-black: #1a1a1a;
+    --dt-surface: #2c2c2c;
+    --dt-raised: #3d3d3d;
+    --dt-bone: #f5f0e8;
+    --dt-red: #c8102e;
+    --dt-red-deep: #8b0000;
+    --dt-text-muted: #888888;
+    --dt-text-subtle: #555555;
+    --dt-border: rgba(255, 255, 255, 0.1);
+    --dt-border-strong: rgba(255, 255, 255, 0.22);
+
+    --dt-sbd-bg: #1a3d1a;
+    --dt-sbd-text: #6fcf6f;
+    --dt-matrix-bg: #2a1040;
+    --dt-matrix-text: #9b59b6;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    background: var(--dt-black);
+    color: var(--dt-bone);
+  }
+
+  body {
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    padding: clamp(28px, 6vw, 72px) 20px 80px;
+  }
+
+  a { color: inherit; }
+
+  .page {
+    max-width: 640px;
+    margin: 0 auto;
+  }
+
+  /* ---- Header ---- */
+
+  header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+    margin-bottom: clamp(36px, 7vw, 56px);
+  }
+
+  .bolt {
+    width: 28px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+
+  .kicker {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--dt-text-subtle);
+  }
+
+  h1 {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: clamp(2.6rem, 8vw, 3.6rem);
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    line-height: 0.92;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  h1 span { color: var(--dt-red); }
+
+  .dek {
+    max-width: 46ch;
+    color: var(--dt-text-muted);
+    font-size: 0.98rem;
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .bookmark-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 6px;
+    padding: 7px 14px;
+    border: 1px solid var(--dt-border);
+    border-radius: 999px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.03em;
+    color: var(--dt-text-muted);
+    background: var(--dt-surface);
+  }
+
+  .bookmark-hint kbd {
+    font-family: inherit;
+    background: var(--dt-raised);
+    border: 1px solid var(--dt-border-strong);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 11px;
+    color: var(--dt-bone);
+  }
+
+  /* ---- Stub cards ---- */
+
+  .stubs {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .stub {
+    display: grid;
+    grid-template-columns: 132px 1fr;
+    background: var(--dt-surface);
+    border: 1px solid var(--dt-border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.6);
+  }
+
+  .stub-spine {
+    position: relative;
+    background: var(--dt-raised);
+    border-right: 2px dashed var(--dt-border-strong);
+    padding: 22px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .stub-spine::before,
+  .stub-spine::after {
+    content: "";
+    position: absolute;
+    right: -11px;
+    width: 22px;
+    height: 22px;
+    background: var(--dt-black);
+    border-radius: 50%;
+  }
+  .stub-spine::before { top: -11px; }
+  .stub-spine::after { bottom: -11px; }
+
+  .stub-year {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 800;
+    font-size: 2.6rem;
+    line-height: 0.85;
+    color: var(--dt-red);
+  }
+
+  .stub-date {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    color: var(--dt-text-muted);
+    text-transform: uppercase;
+  }
+
+  .stub-source {
+    margin-top: 4px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    border-radius: 4px;
+    padding: 2px 8px;
+  }
+
+  .stub-source.sbd { background: var(--dt-sbd-bg); color: var(--dt-sbd-text); }
+  .stub-source.mtx { background: var(--dt-matrix-bg); color: var(--dt-matrix-text); }
+
+  .stub-body {
+    padding: 24px 26px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .venue-block h2 {
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: 0.01em;
+    margin: 0 0 2px;
+    line-height: 1.1;
+    color: var(--dt-bone);
+  }
+
+  .city {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 12px;
+    color: var(--dt-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .note {
+    font-size: 0.95rem;
+    line-height: 1.62;
+    color: var(--dt-bone);
+    margin: 0;
+  }
+
+  .note em {
+    font-style: italic;
+    color: var(--dt-text-muted);
+  }
+
+  .stub-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 4px;
+    padding-top: 14px;
+    border-top: 1px solid var(--dt-border);
+  }
+
+  .tag {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 10.5px;
+    color: var(--dt-text-subtle);
+    letter-spacing: 0.03em;
+  }
+
+  .listen-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: "Barlow Condensed", sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--dt-red);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .listen-link:hover { color: #e0334f; }
+
+  .listen-link svg {
+    width: 13px;
+    height: 13px;
+    transition: transform 0.15s ease;
+  }
+
+  .listen-link:hover svg { transform: translateX(2px); }
+
+  /* ---- Footer ---- */
+
+  footer {
+    margin-top: clamp(40px, 8vw, 64px);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  footer p {
+    max-width: 46ch;
+    font-size: 0.82rem;
+    line-height: 1.55;
+    color: var(--dt-text-subtle);
+    margin: 0;
+  }
+
+  footer a.site {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    color: var(--dt-text-muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--dt-border-strong);
+    padding-bottom: 1px;
+  }
+
+  footer a.site:hover { color: var(--dt-red); border-color: var(--dt-red); }
+
+  @media (max-width: 480px) {
+    .stub { grid-template-columns: 1fr; }
+    .stub-spine {
+      flex-direction: row;
+      border-right: none;
+      border-bottom: 2px dashed var(--dt-border-strong);
+      padding: 16px 18px;
+      justify-content: space-between;
+    }
+    .stub-spine::before,
+    .stub-spine::after {
+      right: auto;
+      bottom: -11px;
+    }
+    .stub-spine::before { left: -11px; top: auto; }
+    .stub-spine::after { right: -11px; }
+    .stub-year { font-size: 2rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <svg class="bolt" viewBox="0 0 388 441" aria-hidden="true">
+        <path fill="var(--dt-red)" d="M 58.0,437.5 L 55.5,437.0 L 105.5,332.0 L 50.5,333.0 L 119.5,268.0 L 55.5,268.0 L 160.5,187.0 L 87.5,190.0 L 205.5,116.0 L 149.0,102.5 L 238.5,58.0 L 221.0,48.5 L 316.0,2.5 L 285.5,69.0 L 334.5,63.0 L 260.5,132.0 L 336.5,140.0 L 242.5,208.0 L 324.5,207.0 L 219.5,277.0 L 292.5,282.0 L 187.0,337.5 L 187.0,341.5 L 220.5,351.0 L 142.5,384.0 L 163.0,396.5 L 58.0,437.5 Z"/>
+      </svg>
+      <div class="kicker">Dead Today — Personal Reference</div>
+      <h1>Todd's<br><span>Favorites</span></h1>
+      <p class="dek">Two shows I come back to. Bookmark this page and it'll always be here, even on a night Archive.org isn't cooperating.</p>
+      <span class="bookmark-hint"><kbd>&#8984;</kbd><kbd>D</kbd> to bookmark this page</span>
+    </header>
+
+    <div class="stubs">
+
+      <!-- Show 1 -->
+      <article class="stub">
+        <div class="stub-spine">
+          <div>
+            <div class="stub-year">1977</div>
+            <div class="stub-date">Apr 27</div>
+          </div>
+          <span class="stub-source sbd">SBD</span>
+        </div>
+        <div class="stub-body">
+          <div class="venue-block">
+            <h2>Capitol Theatre</h2>
+            <div class="city">Passaic, NJ</div>
+          </div>
+          <p class="note">Two weeks before Cornell, on the same spring tour. Scarlet &gt; Fire into Terrapin into Morning Dew. The band was locked in and nobody talks about it.</p>
+          <div class="stub-footer">
+            <span class="tag">Braverman transfer</span>
+            <a class="listen-link" href="https://www.toddames.com/dead-today/show/gd1977-04-27.sbd.braverman.7799.shnf" target="_blank" rel="noopener">
+              Listen
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+      <!-- Show 2 -->
+      <article class="stub">
+        <div class="stub-spine">
+          <div>
+            <div class="stub-year">1991</div>
+            <div class="stub-date">Aug 17</div>
+          </div>
+          <span class="stub-source mtx">MTX</span>
+        </div>
+        <div class="stub-body">
+          <div class="venue-block">
+            <h2>Shoreline Amphitheatre</h2>
+            <div class="city">Mountain View, CA</div>
+          </div>
+          <p class="note">The opener is absolute fire: Help &gt; Slip &gt; Franklin's into Wang Dang Doodle. <em>Bruce Hornsby sits in on piano for this one.</em></p>
+          <div class="stub-footer">
+            <span class="tag">Hansokolow matrix</span>
+            <a class="listen-link" href="https://www.toddames.com/dead-today/show/gd1991-08-17.mtx.hansokolow.107826.flac16" target="_blank" rel="noopener">
+              Listen
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <footer>
+      <p>These are also the fallback shown on Dead Today when there's nothing recorded for today's date.</p>
+      <a class="site" href="https://www.toddames.com/dead-today" target="_blank" rel="noopener">toddames.com/dead-today &rarr;</a>
+    </footer>
+  </div>
+</body>
+</html>
