@@ -24,6 +24,8 @@
 
     --dt-sbd-bg: #1a3d1a;
     --dt-sbd-text: #6fcf6f;
+    --dt-aud-bg: #3d2e0a;
+    --dt-aud-text: #f0a030;
     --dt-matrix-bg: #2a1040;
     --dt-matrix-text: #9b59b6;
   }
@@ -138,6 +140,11 @@
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.6);
+    transition: border-color 0.15s ease;
+  }
+
+  .stub.expanded {
+    border-color: var(--dt-red);
   }
 
   .stub-spine {
@@ -193,14 +200,29 @@
   }
 
   .stub-source.sbd { background: var(--dt-sbd-bg); color: var(--dt-sbd-text); }
+  .stub-source.aud { background: var(--dt-aud-bg); color: var(--dt-aud-text); }
   .stub-source.mtx { background: var(--dt-matrix-bg); color: var(--dt-matrix-text); }
 
   .stub-body {
-    padding: 24px 26px 24px 24px;
     display: flex;
     flex-direction: column;
-    gap: 14px;
   }
+
+  .stub-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    padding: 24px 22px 24px 24px;
+    color: inherit;
+  }
+
+  .stub-header:hover .venue-block h2 { color: var(--dt-red); }
 
   .venue-block h2 {
     font-family: "Barlow Condensed", sans-serif;
@@ -210,6 +232,7 @@
     margin: 0 0 2px;
     line-height: 1.1;
     color: var(--dt-bone);
+    transition: color 0.15s ease;
   }
 
   .city {
@@ -217,6 +240,54 @@
     font-size: 12px;
     color: var(--dt-text-muted);
     letter-spacing: 0.02em;
+  }
+
+  .chevron {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--dt-border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, border-color 0.15s ease, background 0.15s ease;
+  }
+
+  .chevron svg {
+    width: 11px;
+    height: 11px;
+    fill: var(--dt-text-muted);
+  }
+
+  .stub.expanded .chevron {
+    transform: rotate(180deg);
+    border-color: var(--dt-red);
+    background: var(--dt-red);
+  }
+
+  .stub.expanded .chevron svg { fill: var(--dt-bone); }
+
+  .stub-details {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+  }
+
+  .stub.expanded .stub-details {
+    grid-template-rows: 1fr;
+  }
+
+  .stub-details-inner {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 0 26px 0 24px;
+  }
+
+  .stub.expanded .stub-details-inner {
+    padding-bottom: 24px;
   }
 
   .note {
@@ -236,7 +307,6 @@
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-top: 4px;
     padding-top: 14px;
     border-top: 1px solid var(--dt-border);
   }
@@ -266,8 +336,6 @@
   .tracks {
     display: flex;
     flex-direction: column;
-    border-top: 1px solid var(--dt-border);
-    margin-top: 2px;
   }
 
   .tracks-label {
@@ -511,7 +579,7 @@
     <div class="stubs">
 
       <!-- Show 1 -->
-      <article class="stub" data-identifier="gd1977-04-27.sbd.braverman.7799.shnf" data-show-label="Capitol Theatre &middot; 4/27/77">
+      <article class="stub" data-identifier="gd1977-04-27.sbd.braverman.7799.shnf" data-show-label="Capitol Theatre &middot; 4/27/77" data-archive-url="https://archive.org/details/gd1977-04-27.sbd.braverman.7799.shnf">
         <div class="stub-spine">
           <div>
             <div class="stub-year">1977</div>
@@ -520,48 +588,66 @@
           <span class="stub-source sbd">SBD</span>
         </div>
         <div class="stub-body">
-          <div class="venue-block">
-            <h2>Capitol Theatre</h2>
-            <div class="city">Passaic, NJ</div>
-          </div>
-          <p class="note">Two weeks before Cornell, on the same spring tour. Scarlet &gt; Fire into Terrapin into Morning Dew. The band was locked in and nobody talks about it.</p>
-          <div class="stub-footer">
-            <span class="tag">Braverman transfer</span>
-            <a class="site-link" href="https://www.toddames.com/dead-today/show/gd1977-04-27.sbd.braverman.7799.shnf" target="_blank" rel="noopener">
-              archive.org listing &nearr;
-            </a>
-          </div>
-          <div class="tracks" data-tracks>
-            <div class="tracks-label">Tracks</div>
-            <div class="tracks-status">Loading tracks&hellip;</div>
+          <button type="button" class="stub-header" aria-expanded="false">
+            <div class="venue-block">
+              <h2>Capitol Theatre</h2>
+              <div class="city">Passaic, NJ</div>
+            </div>
+            <span class="chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </span>
+          </button>
+          <div class="stub-details">
+            <div class="stub-details-inner">
+              <p class="note">Two weeks before Cornell, on the same spring tour. Scarlet &gt; Fire into Terrapin into Morning Dew. The band was locked in and nobody talks about it.</p>
+              <div class="tracks" data-tracks>
+                <div class="tracks-label">Tracks</div>
+                <div class="tracks-status">Loading tracks&hellip;</div>
+              </div>
+              <div class="stub-footer">
+                <span class="tag">Braverman transfer</span>
+                <a class="site-link" href="https://archive.org/details/gd1977-04-27.sbd.braverman.7799.shnf" target="_blank" rel="noopener">
+                  archive.org listing &nearr;
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </article>
 
       <!-- Show 2 -->
-      <article class="stub" data-identifier="gd1991-08-17.mtx.hansokolow.107826.flac16" data-show-label="Shoreline Amphitheatre &middot; 8/17/91">
+      <article class="stub" data-identifier="gd1991-08-17.senn-ME80.wklitz.94196.flac16" data-show-label="Shoreline Amphitheatre &middot; 8/17/91" data-archive-url="https://archive.org/details/gd1991-08-17.senn-ME80.wklitz.94196.flac16">
         <div class="stub-spine">
           <div>
             <div class="stub-year">1991</div>
             <div class="stub-date">Aug 17</div>
           </div>
-          <span class="stub-source mtx">MTX</span>
+          <span class="stub-source aud">AUD</span>
         </div>
         <div class="stub-body">
-          <div class="venue-block">
-            <h2>Shoreline Amphitheatre</h2>
-            <div class="city">Mountain View, CA</div>
-          </div>
-          <p class="note">The opener is absolute fire: Help &gt; Slip &gt; Franklin's into Wang Dang Doodle. <em>Bruce Hornsby sits in on piano for this one.</em></p>
-          <div class="stub-footer">
-            <span class="tag">Hansokolow matrix</span>
-            <a class="site-link" href="https://www.toddames.com/dead-today/show/gd1991-08-17.mtx.hansokolow.107826.flac16" target="_blank" rel="noopener">
-              archive.org listing &nearr;
-            </a>
-          </div>
-          <div class="tracks" data-tracks>
-            <div class="tracks-label">Tracks</div>
-            <div class="tracks-status">Loading tracks&hellip;</div>
+          <button type="button" class="stub-header" aria-expanded="false">
+            <div class="venue-block">
+              <h2>Shoreline Amphitheatre</h2>
+              <div class="city">Mountain View, CA</div>
+            </div>
+            <span class="chevron" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+            </span>
+          </button>
+          <div class="stub-details">
+            <div class="stub-details-inner">
+              <p class="note">The opener is absolute fire: Help &gt; Slip &gt; Franklin's into Wang Dang Doodle. <em>Bruce Hornsby sits in on piano for this one.</em></p>
+              <div class="tracks" data-tracks>
+                <div class="tracks-label">Tracks</div>
+                <div class="tracks-status">Loading tracks&hellip;</div>
+              </div>
+              <div class="stub-footer">
+                <span class="tag">Litzenberger taper transfer</span>
+                <a class="site-link" href="https://archive.org/details/gd1991-08-17.senn-ME80.wklitz.94196.flac16" target="_blank" rel="noopener">
+                  archive.org listing &nearr;
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </article>
@@ -639,11 +725,12 @@
 
       function loadShowTracks(article) {
         var identifier = article.getAttribute("data-identifier");
-        var label = article.getAttribute("data-show-label");
+        var archiveUrl = article.getAttribute("data-archive-url");
         var container = article.querySelector("[data-tracks]");
         var statusEl = container.querySelector(".tracks-status");
 
-        shows[identifier] = { label: label, tracks: [], container: container };
+        if (shows[identifier].loaded) return;
+        shows[identifier].loaded = true;
 
         fetch("https://archive.org/metadata/" + identifier)
           .then(function (res) {
@@ -678,8 +765,8 @@
           })
           .catch(function () {
             statusEl.innerHTML =
-              'Couldn\'t load tracks right now. <a href="https://archive.org/details/' +
-              identifier +
+              'Couldn\'t load tracks right now. <a href="' +
+              archiveUrl +
               '" target="_blank" rel="noopener">Open on archive.org &rarr;</a>';
             statusEl.parentElement.classList.add("error");
           });
@@ -804,7 +891,20 @@
         audio.currentTime = parseInt(mpSeek.value, 10) || 0;
       });
 
-      document.querySelectorAll(".stub[data-identifier]").forEach(loadShowTracks);
+      document.querySelectorAll(".stub[data-identifier]").forEach(function (article) {
+        var identifier = article.getAttribute("data-identifier");
+        var label = article.getAttribute("data-show-label");
+        var container = article.querySelector("[data-tracks]");
+
+        shows[identifier] = { label: label, tracks: [], container: container, loaded: false };
+
+        var header = article.querySelector(".stub-header");
+        header.addEventListener("click", function () {
+          var expanded = article.classList.toggle("expanded");
+          header.setAttribute("aria-expanded", expanded ? "true" : "false");
+          if (expanded) loadShowTracks(article);
+        });
+      });
     })();
   </script>
 </body>
