@@ -24,22 +24,13 @@ const FAVORITES: FavoriteShow[] = [
       "Two weeks before Cornell on the same spring tour. Scarlet > Fire into Terrapin into Morning Dew. The band was locked in and nobody talks about it.",
   },
   {
-    identifier: "gd1983-06-18.senn421.wise.miller.103285.flac16",
-    date: "1983-06-18",
-    venue: "Saratoga Performing Arts Center",
-    city: "Saratoga Springs, NY",
-    sourceType: SourceType.AUD,
+    identifier: "gd1991-08-17.mtx.hansokolow.107826.flac16",
+    date: "1991-08-17",
+    venue: "Shoreline Amphitheatre",
+    city: "Mountain View, CA",
+    sourceType: SourceType.MATRIX,
     note:
-      "Scarlet > Fire opens Set 2, then Playin' > Drums > Wheel > Morning Dew. One of the great Morning Dews ever. The whole second set is a monster.",
-  },
-  {
-    identifier: "gd1995-06-21.141512.OTS.AKG.Ackerman.Miller.Noel.t-flac.1648",
-    date: "1995-06-21",
-    venue: "Knickerbocker Arena",
-    city: "Albany, NY",
-    sourceType: SourceType.AUD,
-    note:
-      "Scarlet > Fire into Playing in the Band > Morning Dew. Last summer tour before Jerry died that August. Listen knowing what you know.",
+      "The opening is absolute fire: Help > Slip > Franklin's into Wang Dang Doodle. Bruce Hornsby on piano for this one.",
   },
 ];
 
